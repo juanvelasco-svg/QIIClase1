@@ -4,17 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UPCH - Química II | Clase 1: Estado Líquido y Propiedades Fisicoquímicas</title>
+
+<!-- Carga de MathJax para renderizado correcto de fórmulas químicas y matemáticas (subíndices, deltas, fracciones) -->
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
 <style>
     :root {
-        --upch-gold: #D4AF37;
-        --upch-dark: #1a1a2e;
-        --upch-blue: #16213e;
-        --upch-light: #0f3460;
-        --accent: #e94560;
-        --text: #2c3e50;
+        /* Paleta inspirada en la imagen (Escudo UPCH, Pizarra y Reactivos de laboratorio) */
+        --upch-gold: #EAB308;       /* Amarillo dorado del escudo UPCH y titulos */
+        --upch-dark: #1E232A;       /* Gris pizarra oscura de laboratorio */
+        --upch-blue: #1A365D;       /* Azul institucional profundo */
+        --upch-light: #2B6CB0;      /* Azul reactivo matraz */
+        --accent: #E53E3E;          /* Rojo llama / indicador ácido */
+        --accent-orange: #DD6B20;   /* Naranja reactivo */
+        --accent-purple: #805AD5;   /* Púrpura indicador alcalino */
+        --text: #2D3748;            /* Texto legible gris oscuro */
         --white: #ffffff;
-        --sand: #f4e9c1;
-        --shadow: rgba(0, 0, 0, 0.15);
+        --sand: #FEFCBF;            /* Fondo crema/cálido */
+        --shadow: rgba(0, 0, 0, 0.25);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -25,118 +41,113 @@
     ul:not(.map-tree) { list-style: none; }
     ul:not(.map-tree) li, ol li { margin: 0.45rem 0; }
 
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%); color: var(--text); line-height: 1.6; overflow-x: hidden; }
     header { background: linear-gradient(135deg, var(--upch-dark) 0%, var(--upch-blue) 100%); color: var(--white); padding: 2rem; text-align: center; box-shadow: 0 6px 20px var(--shadow); position: relative; overflow: hidden; border-bottom: 5px solid var(--upch-gold); }
     .logo-container { display: flex; align-items: center; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
-    .logo-upch { width: 120px; height: auto; background: var(--white); border-radius: 50%; padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; text-shadow: 3px 3px 6px rgba(0,0,0,0.3); color: var(--upch-gold); }
+    .logo-upch { width: 120px; height: auto; background: var(--white); border-radius: 50%; padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); color: var(--upch-gold); }
     .subtitle { font-size: 1.2rem; opacity: 0.95; font-weight: 300; }
-    .nav-container { background: var(--upch-blue); padding: 1rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px var(--shadow); }
+    .nav-container { background: var(--upch-dark); padding: 1rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px var(--shadow); border-bottom: 2px solid var(--upch-gold); }
     .nav-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.8rem; max-width: 1400px; margin: 0 auto; }
-    .nav-btn { background: var(--white); color: var(--upch-dark); border: none; padding: 0.8rem 1.5rem; border-radius: 25px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
-    .nav-btn:hover, .nav-btn.active { background: var(--upch-gold); color: var(--upch-dark); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(212,175,55,0.4); }
+    .nav-btn { background: var(--upch-blue); color: var(--white); border: 1px solid var(--upch-gold); padding: 0.8rem 1.5rem; border-radius: 25px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+    .nav-btn:hover, .nav-btn.active { background: var(--upch-gold); color: var(--upch-dark); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(234, 179, 8, 0.4); }
     .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
     .section { display: none; animation: fadeIn 0.5s ease; }
     .section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     .card { background: var(--white); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 8px 24px var(--shadow); border-left: 6px solid var(--upch-gold); transition: transform 0.3s ease; }
-    .card:hover { transform: translateY(-5px); }
+    .card:hover { transform: translateY(-3px); }
     h2 { color: var(--upch-blue); margin-bottom: 1.5rem; padding-bottom: 0.8rem; border-bottom: 3px solid var(--upch-gold); display: flex; align-items: center; gap: 0.8rem; font-size: 2rem; }
     h3 { color: var(--upch-light); margin: 1.5rem 0 1rem; font-size: 1.5rem; }
     .molecule-img { max-width: 100%; max-height: 400px; height: auto; border-radius: 12px; margin: 1rem 0; box-shadow: 0 4px 12px var(--shadow); object-fit: contain; }
-    .img-container { text-align: center; margin: 2rem 0; background: #f8f9fa; padding: 1rem; border-radius: 12px; border: 1px dashed var(--upch-gold); }
-    .calculator { background: linear-gradient(135deg, #fff9f5 0%, #fff0e8 100%); border: 3px solid var(--upch-gold); border-radius: 16px; padding: 2rem; margin: 2rem 0; }
-    .calc-title { color: var(--upch-blue); font-size: 1.6rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.8rem; }
+    .img-container { text-align: center; margin: 2rem 0; background: #f8fafc; padding: 1rem; border-radius: 12px; border: 1px dashed var(--upch-gold); }
+    .calculator { background: linear-gradient(135deg, #fefcbf 0%, #fef3c7 100%); border: 3px solid var(--upch-gold); border-radius: 16px; padding: 2rem; margin: 2rem 0; }
+    .calc-title { color: var(--upch-dark); font-size: 1.6rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.8rem; font-weight: bold; }
     .calc-input-group { margin: 1rem 0; }
     .calc-input-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--upch-dark); }
-    .calc-input-group input, .calc-input-group select { width: 100%; padding: 0.8rem; border: 2px solid var(--sand); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; }
-    .calc-input-group input:focus, .calc-input-group select:focus { outline: none; border-color: var(--upch-gold); }
-    .calc-button { background: var(--upch-blue); color: var(--white); border: none; padding: 1rem 2rem; border-radius: 30px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: all 0.3s ease; box-shadow: 0 4px 12px var(--shadow); }
+    .calc-input-group input, .calc-input-group select { width: 100%; padding: 0.8rem; border: 2px solid var(--upch-gold); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; background: #fff; }
+    .calc-input-group input:focus, .calc-input-group select:focus { outline: none; border-color: var(--upch-blue); }
+    .calc-button { background: var(--upch-dark); color: var(--upch-gold); border: 2px solid var(--upch-gold); padding: 1rem 2rem; border-radius: 30px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: all 0.3s ease; box-shadow: 0 4px 12px var(--shadow); }
     .calc-button:hover { background: var(--upch-gold); color: var(--upch-dark); transform: translateY(-2px); }
     .calc-result { background: var(--white); border-left: 5px solid var(--accent); padding: 1.5rem; margin-top: 1.5rem; border-radius: 8px; font-size: 1.1rem; display: none; }
     .calc-result.show { display: block; animation: slideIn 0.5s ease; }
     @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
     table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px var(--shadow); }
-    th { background: linear-gradient(135deg, var(--upch-blue) 0%, var(--upch-light) 100%); color: var(--white); padding: 1.2rem; text-align: left; font-weight: 600; }
-    td { padding: 1rem 1.2rem; border-bottom: 1px solid #eee; transition: background 0.3s; }
-    tr:hover td { background: #f8fff0; }
-    .info-box { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-left: 5px solid #2196f3; padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
-    .tip-box { background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%); border-left: 5px solid #ffc107; padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
-    .bio-box { background: linear-gradient(135deg, #d1ecf1 0%, #a8dadc 100%); border-left: 5px solid #17a2b8; padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
-    .pharma-box { background: linear-gradient(135deg, #f8d7da 0%, #f1aeb5 100%); border-left: 5px solid #dc3545; padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
-    .problem-box { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-left: 5px solid #28a745; padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
-    details.solution { margin-top: 1rem; background: #f8f9fa; border: 2px solid var(--upch-light); border-radius: 10px; padding: 0.8rem 1.2rem; }
-    details.solution summary { cursor: pointer; font-weight: 700; color: var(--upch-light); }
+    th { background: linear-gradient(135deg, var(--upch-dark) 0%, var(--upch-blue) 100%); color: var(--upch-gold); padding: 1.2rem; text-align: left; font-weight: 600; }
+    td { padding: 1rem 1.2rem; border-bottom: 1px solid #e2e8f0; transition: background 0.3s; }
+    tr:hover td { background: #fefcbf; }
+    .info-box { background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%); border-left: 5px solid #3182ce; padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
+    .tip-box { background: linear-gradient(135deg, #fefcbf 0%, #fef3c7 100%); border-left: 5px solid var(--upch-gold); padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
+    .bio-box { background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); border-left: 5px solid #319795; padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
+    .pharma-box { background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%); border-left: 5px solid var(--accent); padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
+    .problem-box { background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%); border-left: 5px solid #38a169; padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
+    details.solution { margin-top: 1rem; background: #f8fafc; border: 2px solid var(--upch-light); border-radius: 10px; padding: 0.8rem 1.2rem; }
+    details.solution summary { cursor: pointer; font-weight: 700; color: var(--upch-blue); }
     details.solution[open] summary { margin-bottom: 0.8rem; border-bottom: 1px dashed var(--upch-light); padding-bottom: .4rem; }
-    .mnemonic-card { background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%); border: 3px solid var(--accent); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; position: relative; overflow: hidden; }
-    .mnemonic-title { color: var(--accent); font-weight: 700; margin-bottom: 0.8rem; font-size: 1.2rem; }
+    .mnemonic-card { background: linear-gradient(135deg, #fff5f5 0%, #feebc8 100%); border: 3px solid var(--accent-orange); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; position: relative; overflow: hidden; }
+    .mnemonic-title { color: var(--accent-orange); font-weight: 700; margin-bottom: 0.8rem; font-size: 1.2rem; }
     .glossary-term { background: var(--white); border: 2px solid var(--upch-gold); border-radius: 8px; padding: 1rem; margin: 0.8rem 0; cursor: pointer; transition: all 0.3s; }
-    .glossary-term:hover { background: #fff9e6; transform: translateX(5px); }
+    .glossary-term:hover { background: #fefcbf; transform: translateX(5px); }
     .glossary-definition { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--upch-gold); }
     .glossary-definition.show { display: block; animation: fadeIn 0.3s ease; }
-    .error-card { background: linear-gradient(135deg, #ffe6e6 0%, #ffb3b3 100%); border-left: 5px solid #dc3545; padding: 1.5rem; margin: 1rem 0; border-radius: 0 12px 12px 0; }
-    .error-title { color: #dc3545; font-weight: 700; margin-bottom: 0.5rem; }
-    .correction { background: #d4edda; border-left: 3px solid #28a745; padding: 1rem; margin-top: 1rem; border-radius: 0 8px 8px 0; }
-    .quiz-container { background: linear-gradient(135deg, var(--upch-blue) 0%, var(--upch-light) 100%); color: var(--white); border-radius: 16px; padding: 2rem; margin: 2rem 0; }
-    .quiz-question-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .error-card { background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%); border-left: 5px solid var(--accent); padding: 1.5rem; margin: 1rem 0; border-radius: 0 12px 12px 0; }
+    .error-title { color: var(--accent); font-weight: 700; margin-bottom: 0.5rem; }
+    .correction { background: #c6f6d5; border-left: 3px solid #38a169; padding: 1rem; margin-top: 1rem; border-radius: 0 8px 8px 0; }
+    .quiz-container { background: linear-gradient(135deg, var(--upch-dark) 0%, var(--upch-blue) 100%); color: var(--white); border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 3px solid var(--upch-gold); }
+    .quiz-question-card { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--upch-gold); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
     .quiz-question { font-size: 1.2rem; margin-bottom: 1rem; font-weight: 600; color: var(--upch-gold); }
     .quiz-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.8rem; }
     .quiz-option { background: var(--white); color: var(--text); border: 2px solid transparent; padding: 0.9rem 1.2rem; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: 500; text-align: left; }
     .quiz-option:hover:not(:disabled) { border-color: var(--upch-gold); transform: translateY(-2px); }
     .quiz-option:disabled { cursor: not-allowed; opacity: 0.9; }
-    .quiz-option.correct { background: #4caf50; color: white; border-color: #2e7d32; }
-    .quiz-option.incorrect { background: #f44336; color: white; border-color: #c62828; }
+    .quiz-option.correct { background: #38a169; color: white; border-color: #22543d; }
+    .quiz-option.incorrect { background: #e53e3e; color: white; border-color: #742a2a; }
     .quiz-explanation { margin-top: 0.8rem; padding: 0.8rem; background: rgba(255,255,255,0.15); border-radius: 6px; font-size: 0.95rem; color: #fff; display: none; }
     .quiz-progress { max-width: 720px; margin: 0 auto 1rem; }
-    .quiz-progress-bar-bg { height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; }
-    .quiz-progress-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--upch-gold), var(--accent)); transition: width 0.4s; }
+    .quiz-progress-bar-bg { height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden; }
+    .quiz-progress-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--upch-gold), var(--accent-orange)); transition: width 0.4s; }
     .quiz-stats { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; margin: 1rem 0; }
     .quiz-stat { padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: 700; color: #fff; font-size: 0.95rem; background: var(--upch-light); }
     .footer { background: var(--upch-dark); color: var(--white); text-align: center; padding: 2.5rem; margin-top: 3rem; border-top: 5px solid var(--upch-gold); }
     .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5rem 0; border-radius: 12px; box-shadow: 0 4px 12px var(--shadow); }
     .table-responsive table { min-width: 600px; width: 100%; margin: 0; }
     .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .tab { background: var(--sand); border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+    .tab { background: #e2e8f0; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
     .tab.active { background: var(--upch-gold); color: var(--upch-dark); }
     .tab-content { display: none; }
     .tab-content.active { display: block; animation: fadeIn 0.5s ease; }
     .fc-stats { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; margin: 1rem 0; }
     .fc-stat { padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: 700; color: #fff; font-size: 0.95rem; }
-    .fc-stat.good { background: #28a745; } .fc-stat.bad { background: #dc3545; } .fc-stat.pending { background: #6c757d; } .fc-stat.total { background: var(--upch-light); }
-    .fc-progress { height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; max-width: 720px; margin: 0 auto 1.5rem; }
+    .fc-stat.good { background: #38a169; } .fc-stat.bad { background: #e53e3e; } .fc-stat.pending { background: #4a5568; } .fc-stat.total { background: var(--upch-blue); }
+    .fc-progress { height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden; max-width: 720px; margin: 0 auto 1.5rem; }
     .fc-progress-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--upch-gold), var(--accent)); transition: width 0.4s; }
     .flashcard-scene { perspective: 1400px; max-width: 720px; height: 320px; margin: 0 auto 1.5rem; }
     .flashcard { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.6s; cursor: pointer; }
     .flashcard.flipped { transform: rotateY(180deg); }
     .fc-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 16px; padding: 2rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: auto; box-shadow: 0 8px 24px var(--shadow); font-size: 1.15rem; }
-    .fc-front { background: linear-gradient(135deg, var(--upch-blue), var(--upch-light)); color: #fff; border: 3px solid var(--upch-gold); }
-    .fc-back { background: linear-gradient(135deg, #fff9e6, var(--sand)); color: var(--text); border: 3px solid var(--upch-gold); transform: rotateY(180deg); }
-    .fc-label { font-size: 0.85rem; letter-spacing: 2px; font-weight: 800; opacity: 0.8; margin-bottom: 1rem; }
-    .fc-hint { margin-top: 1rem; font-size: 0.85rem; opacity: 0.7; font-style: italic; }
+    .fc-front { background: linear-gradient(135deg, var(--upch-dark), var(--upch-blue)); color: #fff; border: 3px solid var(--upch-gold); }
+    .fc-back { background: linear-gradient(135deg, #fff, #fefcbf); color: var(--text); border: 3px solid var(--upch-gold); transform: rotateY(180deg); }
+    .fc-label { font-size: 0.85rem; letter-spacing: 2px; font-weight: 800; color: var(--upch-gold); margin-bottom: 1rem; }
+    .fc-hint { margin-top: 1rem; font-size: 0.85rem; opacity: 0.8; font-style: italic; }
     .fc-controls { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap; }
     .fc-btn { border: none; padding: 0.9rem 2rem; border-radius: 30px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.3s; color: #fff; }
     .fc-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .fc-btn.good { background: #28a745; } .fc-btn.bad { background: #dc3545; }
+    .fc-btn.good { background: #38a169; } .fc-btn.bad { background: #e53e3e; }
     .fc-btn:not(:disabled):hover { transform: translateY(-3px); }
-    .fc-link { background: none; border: none; color: #6c757d; text-decoration: underline; cursor: pointer; font-size: 0.85rem; margin-top: 1rem; }
+    .fc-link { background: none; border: none; color: #718096; text-decoration: underline; cursor: pointer; font-size: 0.85rem; margin-top: 1rem; }
 
     .map-container { overflow-x: auto; padding: 1rem 0; }
     .map-tree, .map-tree ul { list-style: none; margin: 0; padding-left: 0; }
     .map-tree ul { display: none; padding-left: 1.6rem; margin: 0.6rem 0 0; border-left: 3px solid var(--upch-gold); }
     .map-tree li.open > ul { display: block; animation: fadeIn 0.4s ease; }
     .map-tree li { margin: 0.4rem 0; }
-    .map-node { display: inline-block; background: var(--upch-blue); color: #fff; padding: 0.6rem 1.1rem; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+    .map-node { display: inline-block; background: var(--upch-dark); color: #fff; padding: 0.6rem 1.1rem; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s; border: 1px solid var(--upch-gold); }
     .map-node:hover { background: var(--upch-gold); color: var(--upch-dark); transform: translateX(4px); }
-    .map-node.root { background: var(--accent); font-size: 1.15rem; }
-    .map-node.branch { background: var(--upch-light); }
-    .map-leaf { display: inline-block; background: var(--sand); color: var(--text); padding: 0.45rem 0.9rem; border-radius: 8px; font-size: 0.95rem; border: 2px solid var(--upch-gold); }
+    .map-node.root { background: var(--accent); color: white; font-size: 1.15rem; border: none; }
+    .map-node.branch { background: var(--upch-blue); }
+    .map-leaf { display: inline-block; background: #fff; color: var(--text); padding: 0.45rem 0.9rem; border-radius: 8px; font-size: 0.95rem; border: 2px solid var(--upch-gold); }
     li.has-children > .map-node::before { content: '▶ '; font-size: 0.8em; }
     li.has-children.open > .map-node::before { content: '▼ '; font-size: 0.8em; }
-
-    .bar-wrap { display: flex; align-items: flex-end; gap: 1rem; justify-content: center; flex-wrap: wrap; margin: 1.5rem 0; height: 220px; border-bottom: 2px solid var(--upch-gold); padding-bottom: 5px; }
-    .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
-    .bar { width: 58px; background: linear-gradient(180deg, var(--upch-gold), var(--accent)); border-radius: 8px 8px 0 0; box-shadow: 0 3px 8px var(--shadow); transition: height 0.5s ease; }
-    .bar-label { text-align: center; font-size: 0.8rem; margin-top: 0.4rem; font-weight: 600; color: var(--upch-dark); }
 
     .img-guide-box { background: #f0f4f8; border: 2px dashed var(--upch-blue); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
     .img-guide-title { font-weight: 700; color: var(--upch-blue); margin-bottom: 0.8rem; }
@@ -1047,7 +1058,7 @@ function calcularOstwald() {
 const questionBank = [
     {
         q: "1. ¿Cuál de las siguientes moléculas presenta como ÚNICA fuerza intermolecular la fuerza de dispersión de London?",
-        options: ["Agua (H2O)", "Pentano (C5H12)", "Ácido clorhídrico (HCl)", "Amoniaco (NH3)"],
+        options: ["Agua ($H_2O$)", "Pentano ($C_5H_{12}$)", "Ácido clorhídrico ($HCl$)", "Amoniaco ($NH_3$)"],
         correct: 1,
         exp: "El pentano es un hidrocarburo apolar, por lo que únicamente presenta fuerzas de dispersión o de London."
     },
@@ -1064,16 +1075,16 @@ const questionBank = [
         exp: "En el mercurio las fuerzas de cohesión interatómicas superan la adhesión con el vidrio, formando un menisco convexo."
     },
     {
-        q: "4. En la ecuación de capilaridad γ = ½ · r · h · d · g, si el radio del capilar se reduce a la mitad, ¿qué sucede con la altura del líquido h?",
+        q: "4. En la ecuación de capilaridad $\\gamma = \\frac{1}{2} r \\cdot h \\cdot d \\cdot g$, si el radio del capilar se reduce a la mitad, ¿qué sucede con la altura del líquido $h$?",
         options: ["Se reduce a la mitad", "Permanecerá constante", "Se duplica", "Se cuadruplica"],
         correct: 2,
-        exp: "La altura h es inversamente proporcional al radio r (h = 2γ / (r·d·g)). Si r baja a la mitad, h se duplica."
+        exp: "La altura $h$ es inversamente proporcional al radio $r$ ($h = \\frac{2\\gamma}{r \\cdot d \\cdot g}$). Si $r$ baja a la mitad, $h$ se duplica."
     },
     {
-        q: "5. ¿Cuál es la unidad de viscosidad en el sistema CGS equivalente a g·cm⁻¹·s⁻¹?",
+        q: "5. ¿Cuál es la unidad de viscosidad en el sistema CGS equivalente a $\\text{g}\\cdot\\text{cm}^{-1}\\cdot\\text{s}^{-1}$?",
         options: ["Pascal segundo", "Poise", "Dina/cm", "Joule/mol"],
         correct: 1,
-        exp: "El Poise es la unidad CGS fundamental para la viscosidad dinámica (g·cm⁻¹·s⁻¹)."
+        exp: "El Poise es la unidad CGS fundamental para la viscosidad dinámica."
     },
     {
         q: "6. En el punto de ebullición de un líquido, ¿qué condición termodinámica se cumple obligatoriamente?",
@@ -1083,21 +1094,21 @@ const questionBank = [
     },
     {
         q: "7. ¿Por qué las ollas a presión cocinan los alimentos mucho más rápido?",
-        options: ["Porque reducen el calor latente", "Aumentan la presión externa elevando el punto de ebullición del agua a 120-130°C", "Reducen la viscosidad del agua a cero", "Evitan la evaporación del alimento"],
+        options: ["Porque reducen el calor latente", "Aumentan la presión externa elevando el punto de ebullición del agua a $120^\\circ\\text{C}-130^\\circ\\text{C}$", "Reducen la viscosidad del agua a cero", "Evitan la evaporación del alimento"],
         correct: 1,
-        exp: "Al confinar el vapor, la presión sube > 1 atm, elevando la temperatura de ebullición a 120-130°C."
+        exp: "Al confinar el vapor, la presión sube $> 1\\text{ atm}$, elevando la temperatura de ebullición a $120^\\circ\\text{C}-130^\\circ\\text{C}$."
     },
     {
-        q: "8. En una gráfica de la Ecuación de Clausius-Clapeyron (ln P vs 1/T), ¿qué representa la pendiente de la recta?",
-        options: ["-ΔH_vap / R", "ΔH_vap · R", "R / ΔH_vap", "T_ebullicion"],
+        q: "8. En una gráfica de la Ecuación de Clausius-Clapeyron ($\\ln P$ vs $1/T$), ¿qué representa la pendiente de la recta?",
+        options: ["$-\\Delta H_{vap} / R$", "$\\Delta H_{vap} \\cdot R$", "$R / \\Delta H_{vap}$", "$T_{ebullicion}$"],
         correct: 0,
-        exp: "La forma lineal ln P = (-ΔH_vap / R)·(1/T) + C indica que la pendiente m es igual a -ΔH_vap / R."
+        exp: "La forma lineal $\\ln P = (-\\Delta H_{vap} / R)(1/T) + C$ indica que la pendiente es $-\\Delta H_{vap} / R$."
     },
     {
         q: "9. ¿Cuál de las siguientes moléculas es capaz de formar Puentes de Hidrógeno entre sus mismas moléculas?",
-        options: ["CH4 (Metano)", "HCl (Ácido clorhídrico)", "NH3 (Amoniaco)", "H2S (Sulfuro de hidrógeno)"],
+        options: ["$CH_4$ (Metano)", "$HCl$ (Ácido clorhídrico)", "$NH_3$ (Amoniaco)", "$H_2S$ (Sulfuro de hidrógeno)"],
         correct: 2,
-        exp: "El amoniaco (NH3) tiene Hidrógeno unido directamente a Nitrógeno (FON), cumpliendo el requisito."
+        exp: "El amoniaco ($NH_3$) tiene Hidrógeno unido directamente a Nitrógeno (FON), cumpliendo el requisito."
     },
     {
         q: "10. En los alveolos pulmonares, la sustancia que evita el colapso reduciendo la tensión superficial se denomina:",
@@ -1113,7 +1124,7 @@ const questionBank = [
     },
     {
         q: "12. La capilaridad en el xilema de las plantas superiores depende principalmente de:",
-        options: ["Cohesión entre H2O y adhesión con la pared celular", "Viscosidad del mercurio", "Presión de vapor del suelo", "Fuerzas de London únicamente"],
+        options: ["Cohesión entre $H_2O$ y adhesión con la pared celular", "Viscosidad del mercurio", "Presión de vapor del suelo", "Fuerzas de London únicamente"],
         correct: 0,
         exp: "La teoría de cohesión-tensión combina puentes de H entre moléculas de agua y adhesión a paredes xilemáticas."
     },
@@ -1131,9 +1142,9 @@ const questionBank = [
     },
     {
         q: "15. Para el cálculo CGS de tensión superficial, la aceleración de la gravedad debe ingresarse como:",
-        options: ["9.81 m/s²", "980 cm/s²", "1.00 g/cm³", "760 mmHg"],
+        options: ["$9.81\\text{ m/s}^2$", "$980\\text{ cm/s}^2$", "$1.00\\text{ g/cm}^3$", "$760\\text{ mmHg}$"],
         correct: 1,
-        exp: "En CGS, g = 980 cm/s² es la cifra coherente con dina, cm y gramos."
+        exp: "En CGS, $g = 980\\text{ cm/s}^2$ es la cifra coherente con dina, cm y gramos."
     },
     {
         q: "16. La presión de vapor de un líquido depende exclusivamente de:",
@@ -1166,8 +1177,8 @@ const questionBank = [
         exp: "Al superar la T y P críticas desaparece el menisco de separación, convirtiéndose en fluido supercrítico."
     },
     {
-        q: "21. ¿Qué sustancia tiene mayor presión de vapor a temperatura ambiente (20°C)?",
-        options: ["Agua (H2O)", "Éter dietílico (volátil)", "Glicerol (viscoso)", "Aceite mineral"],
+        q: "21. ¿Qué sustancia tiene mayor presión de vapor a temperatura ambiente ($20^\\circ\\text{C}$)?",
+        options: ["Agua ($H_2O$)", "Éter dietílico (volátil)", "Glicerol (viscoso)", "Aceite mineral"],
         correct: 1,
         exp: "Las sustancias volátiles con débiles fuerzas intermoleculares tienen presiones de vapor elevadas."
     },
@@ -1190,10 +1201,10 @@ const questionBank = [
         exp: "El perfil parabólico de flujo laminar alcanza su pico en el centro del tubo capilar."
     },
     {
-        q: "25. La constante R utilizada en la ecuación de Clausius-Clapeyron en el SI es:",
-        options: ["0.0821 L·atm/(mol·K)", "8.314 J/(mol·K)", "62.4 mmHg·L/(mol·K)", "1.987 cal/(mol·K)"],
+        q: "25. La constante $R$ utilizada en la ecuación de Clausius-Clapeyron en el SI es:",
+        options: ["$0.0821\\text{ L}\\cdot\\text{atm}/(\\text{mol}\\cdot\\text{K})$", "$8.314\\text{ J}/(\\text{mol}\\cdot\\text{K})$", "$62.4\\text{ mmHg}\\cdot\\text{L}/(\\text{mol}\\cdot\\text{K})$", "$1.987\\text{ cal}/(\\text{mol}\\cdot\\text{K})$"],
         correct: 1,
-        exp: "Para la obtención de energéticos en Joules/kJ en Clausius-Clapeyron se usa R = 8.314 J/(mol·K)."
+        exp: "Para la obtención de valores energéticos en Joules/kJ en Clausius-Clapeyron se usa $R = 8.314\\text{ J}/(\\text{mol}\\cdot\\text{K})$."
     },
     {
         q: "26. Un líquido humecta una superficie sólida cuando:",
@@ -1220,10 +1231,10 @@ const questionBank = [
         exp: "Fuerzas de atracción más intensas dificultan el deslizamiento entre capas moleculares, elevando la viscosidad."
     },
     {
-        q: "30. Si el ángulo de contacto de un líquido con el tubo capilar es θ ≈ 0°, el término cos(θ) en la ecuación equivale a:",
+        q: "30. Si el ángulo de contacto de un líquido con el tubo capilar es $\\theta \\approx 0^\\circ$, el término $\\cos(\\theta)$ en la ecuación equivale a:",
         options: ["0", "1", "0.5", "Infinito"],
         correct: 1,
-        exp: "El coseno de 0 grados es 1, por lo que el término se omite de la expresión simplificada."
+        exp: "El coseno de 0 grados es 1, por lo que el término se simplifica en la expresión."
     }
 ];
 
@@ -1258,6 +1269,9 @@ function renderQuiz() {
     });
 
     updateQuizProgress();
+    if (window.MathJax) {
+        MathJax.typesetPromise();
+    }
 }
 
 function selectAnswer(qIdx, optIdx) {
