@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UPCH - Química II | Clase 1: Estado Líquido y Propiedades Fisicoquímicas</title>
+<title>Química II | Clase 1: Estado Líquido y Propiedades Fisicoquímicas</title>
 
 <!-- Carga de MathJax para renderizado correcto de fórmulas químicas y matemáticas (subíndices, deltas, fracciones) -->
 <script>
@@ -19,11 +19,11 @@
 
 <style>
     :root {
-        /* Paleta inspirada en la imagen (Escudo UPCH, Pizarra y Reactivos de laboratorio) */
-        --upch-gold: #EAB308;       /* Amarillo dorado del escudo UPCH y titulos */
-        --upch-dark: #1E232A;       /* Gris pizarra oscura de laboratorio */
-        --upch-blue: #1A365D;       /* Azul institucional profundo */
-        --upch-light: #2B6CB0;      /* Azul reactivo matraz */
+        /* Paleta inspirada en la imagen (Logo QII, Pizarra y Reactivos de laboratorio) */
+        --QII-gold: #EAB308;       /* Amarillo dorado del escudo QII y titulos */
+        --QII-dark: #1E232A;       /* Gris pizarra oscura de laboratorio */
+        --QII-blue: #1A365D;       /* Azul institucional profundo */
+        --QII-light: #2B6CB0;      /* Azul reactivo matraz */
         --accent: #E53E3E;          /* Rojo llama / indicador ácido */
         --accent-orange: #DD6B20;   /* Naranja reactivo */
         --accent-purple: #805AD5;   /* Púrpura indicador alcalino */
@@ -42,92 +42,92 @@
     ul:not(.map-tree) li, ol li { margin: 0.45rem 0; }
 
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%); color: var(--text); line-height: 1.6; overflow-x: hidden; }
-    header { background: linear-gradient(135deg, var(--upch-dark) 0%, var(--upch-blue) 100%); color: var(--white); padding: 2rem; text-align: center; box-shadow: 0 6px 20px var(--shadow); position: relative; overflow: hidden; border-bottom: 5px solid var(--upch-gold); }
+    header { background: linear-gradient(135deg, var(--QII-dark) 0%, var(--QII-blue) 100%); color: var(--white); padding: 2rem; text-align: center; box-shadow: 0 6px 20px var(--shadow); position: relative; overflow: hidden; border-bottom: 5px solid var(--QII-gold); }
     .logo-container { display: flex; align-items: center; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
-    .logo-upch { width: 120px; height: auto; background: var(--white); border-radius: 50%; padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); color: var(--upch-gold); }
+    .Logo-QII.png { width: 120px; height: auto; background: var(--white); border-radius: 50%; padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); color: var(--QII-gold); }
     .subtitle { font-size: 1.2rem; opacity: 0.95; font-weight: 300; }
-    .nav-container { background: var(--upch-dark); padding: 1rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px var(--shadow); border-bottom: 2px solid var(--upch-gold); }
+    .nav-container { background: var(--QII-dark); padding: 1rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px var(--shadow); border-bottom: 2px solid var(--QII-gold); }
     .nav-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.8rem; max-width: 1400px; margin: 0 auto; }
-    .nav-btn { background: var(--upch-blue); color: var(--white); border: 1px solid var(--upch-gold); padding: 0.8rem 1.5rem; border-radius: 25px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
-    .nav-btn:hover, .nav-btn.active { background: var(--upch-gold); color: var(--upch-dark); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(234, 179, 8, 0.4); }
+    .nav-btn { background: var(--QII-blue); color: var(--white); border: 1px solid var(--QII-gold); padding: 0.8rem 1.5rem; border-radius: 25px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+    .nav-btn:hover, .nav-btn.active { background: var(--QII-gold); color: var(--QII-dark); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(234, 179, 8, 0.4); }
     .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
     .section { display: none; animation: fadeIn 0.5s ease; }
     .section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .card { background: var(--white); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 8px 24px var(--shadow); border-left: 6px solid var(--upch-gold); transition: transform 0.3s ease; }
+    .card { background: var(--white); border-radius: 16px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 8px 24px var(--shadow); border-left: 6px solid var(--QII-gold); transition: transform 0.3s ease; }
     .card:hover { transform: translateY(-3px); }
-    h2 { color: var(--upch-blue); margin-bottom: 1.5rem; padding-bottom: 0.8rem; border-bottom: 3px solid var(--upch-gold); display: flex; align-items: center; gap: 0.8rem; font-size: 2rem; }
-    h3 { color: var(--upch-light); margin: 1.5rem 0 1rem; font-size: 1.5rem; }
+    h2 { color: var(--QII-blue); margin-bottom: 1.5rem; padding-bottom: 0.8rem; border-bottom: 3px solid var(--QII-gold); display: flex; align-items: center; gap: 0.8rem; font-size: 2rem; }
+    h3 { color: var(--QII-light); margin: 1.5rem 0 1rem; font-size: 1.5rem; }
     .molecule-img { max-width: 100%; max-height: 400px; height: auto; border-radius: 12px; margin: 1rem 0; box-shadow: 0 4px 12px var(--shadow); object-fit: contain; }
-    .img-container { text-align: center; margin: 2rem 0; background: #f8fafc; padding: 1rem; border-radius: 12px; border: 1px dashed var(--upch-gold); }
-    .calculator { background: linear-gradient(135deg, #fefcbf 0%, #fef3c7 100%); border: 3px solid var(--upch-gold); border-radius: 16px; padding: 2rem; margin: 2rem 0; }
-    .calc-title { color: var(--upch-dark); font-size: 1.6rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.8rem; font-weight: bold; }
+    .img-container { text-align: center; margin: 2rem 0; background: #f8fafc; padding: 1rem; border-radius: 12px; border: 1px dashed var(--QII-gold); }
+    .calculator { background: linear-gradient(135deg, #fefcbf 0%, #fef3c7 100%); border: 3px solid var(--QII-gold); border-radius: 16px; padding: 2rem; margin: 2rem 0; }
+    .calc-title { color: var(--QII-dark); font-size: 1.6rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.8rem; font-weight: bold; }
     .calc-input-group { margin: 1rem 0; }
-    .calc-input-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--upch-dark); }
-    .calc-input-group input, .calc-input-group select { width: 100%; padding: 0.8rem; border: 2px solid var(--upch-gold); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; background: #fff; }
-    .calc-input-group input:focus, .calc-input-group select:focus { outline: none; border-color: var(--upch-blue); }
-    .calc-button { background: var(--upch-dark); color: var(--upch-gold); border: 2px solid var(--upch-gold); padding: 1rem 2rem; border-radius: 30px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: all 0.3s ease; box-shadow: 0 4px 12px var(--shadow); }
-    .calc-button:hover { background: var(--upch-gold); color: var(--upch-dark); transform: translateY(-2px); }
+    .calc-input-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--QII-dark); }
+    .calc-input-group input, .calc-input-group select { width: 100%; padding: 0.8rem; border: 2px solid var(--QII-gold); border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; background: #fff; }
+    .calc-input-group input:focus, .calc-input-group select:focus { outline: none; border-color: var(--QII-blue); }
+    .calc-button { background: var(--QII-dark); color: var(--QII-gold); border: 2px solid var(--QII-gold); padding: 1rem 2rem; border-radius: 30px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: all 0.3s ease; box-shadow: 0 4px 12px var(--shadow); }
+    .calc-button:hover { background: var(--QII-gold); color: var(--QII-dark); transform: translateY(-2px); }
     .calc-result { background: var(--white); border-left: 5px solid var(--accent); padding: 1.5rem; margin-top: 1.5rem; border-radius: 8px; font-size: 1.1rem; display: none; }
     .calc-result.show { display: block; animation: slideIn 0.5s ease; }
     @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
     table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px var(--shadow); }
-    th { background: linear-gradient(135deg, var(--upch-dark) 0%, var(--upch-blue) 100%); color: var(--upch-gold); padding: 1.2rem; text-align: left; font-weight: 600; }
+    th { background: linear-gradient(135deg, var(--QII-dark) 0%, var(--QII-blue) 100%); color: var(--QII-gold); padding: 1.2rem; text-align: left; font-weight: 600; }
     td { padding: 1rem 1.2rem; border-bottom: 1px solid #e2e8f0; transition: background 0.3s; }
     tr:hover td { background: #fefcbf; }
     .info-box { background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%); border-left: 5px solid #3182ce; padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
-    .tip-box { background: linear-gradient(135deg, #fefcbf 0%, #fef3c7 100%); border-left: 5px solid var(--upch-gold); padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
+    .tip-box { background: linear-gradient(135deg, #fefcbf 0%, #fef3c7 100%); border-left: 5px solid var(--QII-gold); padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
     .bio-box { background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%); border-left: 5px solid #319795; padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
     .pharma-box { background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%); border-left: 5px solid var(--accent); padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
     .problem-box { background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%); border-left: 5px solid #38a169; padding: 1.5rem; margin: 1.5rem 0; border-radius: 0 12px 12px 0; }
-    details.solution { margin-top: 1rem; background: #f8fafc; border: 2px solid var(--upch-light); border-radius: 10px; padding: 0.8rem 1.2rem; }
-    details.solution summary { cursor: pointer; font-weight: 700; color: var(--upch-blue); }
-    details.solution[open] summary { margin-bottom: 0.8rem; border-bottom: 1px dashed var(--upch-light); padding-bottom: .4rem; }
+    details.solution { margin-top: 1rem; background: #f8fafc; border: 2px solid var(--QII-light); border-radius: 10px; padding: 0.8rem 1.2rem; }
+    details.solution summary { cursor: pointer; font-weight: 700; color: var(--QII-blue); }
+    details.solution[open] summary { margin-bottom: 0.8rem; border-bottom: 1px dashed var(--QII-light); padding-bottom: .4rem; }
     .mnemonic-card { background: linear-gradient(135deg, #fff5f5 0%, #feebc8 100%); border: 3px solid var(--accent-orange); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; position: relative; overflow: hidden; }
     .mnemonic-title { color: var(--accent-orange); font-weight: 700; margin-bottom: 0.8rem; font-size: 1.2rem; }
-    .glossary-term { background: var(--white); border: 2px solid var(--upch-gold); border-radius: 8px; padding: 1rem; margin: 0.8rem 0; cursor: pointer; transition: all 0.3s; }
+    .glossary-term { background: var(--white); border: 2px solid var(--QII-gold); border-radius: 8px; padding: 1rem; margin: 0.8rem 0; cursor: pointer; transition: all 0.3s; }
     .glossary-term:hover { background: #fefcbf; transform: translateX(5px); }
-    .glossary-definition { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--upch-gold); }
+    .glossary-definition { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--QII-gold); }
     .glossary-definition.show { display: block; animation: fadeIn 0.3s ease; }
     .error-card { background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%); border-left: 5px solid var(--accent); padding: 1.5rem; margin: 1rem 0; border-radius: 0 12px 12px 0; }
     .error-title { color: var(--accent); font-weight: 700; margin-bottom: 0.5rem; }
     .correction { background: #c6f6d5; border-left: 3px solid #38a169; padding: 1rem; margin-top: 1rem; border-radius: 0 8px 8px 0; }
-    .quiz-container { background: linear-gradient(135deg, var(--upch-dark) 0%, var(--upch-blue) 100%); color: var(--white); border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 3px solid var(--upch-gold); }
-    .quiz-question-card { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--upch-gold); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
-    .quiz-question { font-size: 1.2rem; margin-bottom: 1rem; font-weight: 600; color: var(--upch-gold); }
+    .quiz-container { background: linear-gradient(135deg, var(--QII-dark) 0%, var(--QII-blue) 100%); color: var(--white); border-radius: 16px; padding: 2rem; margin: 2rem 0; border: 3px solid var(--QII-gold); }
+    .quiz-question-card { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--QII-gold); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .quiz-question { font-size: 1.2rem; margin-bottom: 1rem; font-weight: 600; color: var(--QII-gold); }
     .quiz-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.8rem; }
     .quiz-option { background: var(--white); color: var(--text); border: 2px solid transparent; padding: 0.9rem 1.2rem; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-weight: 500; text-align: left; }
-    .quiz-option:hover:not(:disabled) { border-color: var(--upch-gold); transform: translateY(-2px); }
+    .quiz-option:hover:not(:disabled) { border-color: var(--QII-gold); transform: translateY(-2px); }
     .quiz-option:disabled { cursor: not-allowed; opacity: 0.9; }
     .quiz-option.correct { background: #38a169; color: white; border-color: #22543d; }
     .quiz-option.incorrect { background: #e53e3e; color: white; border-color: #742a2a; }
     .quiz-explanation { margin-top: 0.8rem; padding: 0.8rem; background: rgba(255,255,255,0.15); border-radius: 6px; font-size: 0.95rem; color: #fff; display: none; }
     .quiz-progress { max-width: 720px; margin: 0 auto 1rem; }
     .quiz-progress-bar-bg { height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden; }
-    .quiz-progress-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--upch-gold), var(--accent-orange)); transition: width 0.4s; }
+    .quiz-progress-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--QII-gold), var(--accent-orange)); transition: width 0.4s; }
     .quiz-stats { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; margin: 1rem 0; }
-    .quiz-stat { padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: 700; color: #fff; font-size: 0.95rem; background: var(--upch-light); }
-    .footer { background: var(--upch-dark); color: var(--white); text-align: center; padding: 2.5rem; margin-top: 3rem; border-top: 5px solid var(--upch-gold); }
+    .quiz-stat { padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: 700; color: #fff; font-size: 0.95rem; background: var(--QII-light); }
+    .footer { background: var(--QII-dark); color: var(--white); text-align: center; padding: 2.5rem; margin-top: 3rem; border-top: 5px solid var(--QII-gold); }
     .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5rem 0; border-radius: 12px; box-shadow: 0 4px 12px var(--shadow); }
     .table-responsive table { min-width: 600px; width: 100%; margin: 0; }
     .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
     .tab { background: #e2e8f0; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-    .tab.active { background: var(--upch-gold); color: var(--upch-dark); }
+    .tab.active { background: var(--QII-gold); color: var(--QII-dark); }
     .tab-content { display: none; }
     .tab-content.active { display: block; animation: fadeIn 0.5s ease; }
     .fc-stats { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; margin: 1rem 0; }
     .fc-stat { padding: 0.6rem 1.2rem; border-radius: 20px; font-weight: 700; color: #fff; font-size: 0.95rem; }
-    .fc-stat.good { background: #38a169; } .fc-stat.bad { background: #e53e3e; } .fc-stat.pending { background: #4a5568; } .fc-stat.total { background: var(--upch-blue); }
+    .fc-stat.good { background: #38a169; } .fc-stat.bad { background: #e53e3e; } .fc-stat.pending { background: #4a5568; } .fc-stat.total { background: var(--QII-blue); }
     .fc-progress { height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden; max-width: 720px; margin: 0 auto 1.5rem; }
-    .fc-progress-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--upch-gold), var(--accent)); transition: width 0.4s; }
+    .fc-progress-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--QII-gold), var(--accent)); transition: width 0.4s; }
     .flashcard-scene { perspective: 1400px; max-width: 720px; height: 320px; margin: 0 auto 1.5rem; }
     .flashcard { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.6s; cursor: pointer; }
     .flashcard.flipped { transform: rotateY(180deg); }
     .fc-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 16px; padding: 2rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: auto; box-shadow: 0 8px 24px var(--shadow); font-size: 1.15rem; }
-    .fc-front { background: linear-gradient(135deg, var(--upch-dark), var(--upch-blue)); color: #fff; border: 3px solid var(--upch-gold); }
-    .fc-back { background: linear-gradient(135deg, #fff, #fefcbf); color: var(--text); border: 3px solid var(--upch-gold); transform: rotateY(180deg); }
-    .fc-label { font-size: 0.85rem; letter-spacing: 2px; font-weight: 800; color: var(--upch-gold); margin-bottom: 1rem; }
+    .fc-front { background: linear-gradient(135deg, var(--QII-dark), var(--QII-blue)); color: #fff; border: 3px solid var(--QII-gold); }
+    .fc-back { background: linear-gradient(135deg, #fff, #fefcbf); color: var(--text); border: 3px solid var(--QII-gold); transform: rotateY(180deg); }
+    .fc-label { font-size: 0.85rem; letter-spacing: 2px; font-weight: 800; color: var(--QII-gold); margin-bottom: 1rem; }
     .fc-hint { margin-top: 1rem; font-size: 0.85rem; opacity: 0.8; font-style: italic; }
     .fc-controls { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap; }
     .fc-btn { border: none; padding: 0.9rem 2rem; border-radius: 30px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.3s; color: #fff; }
@@ -138,23 +138,23 @@
 
     .map-container { overflow-x: auto; padding: 1rem 0; }
     .map-tree, .map-tree ul { list-style: none; margin: 0; padding-left: 0; }
-    .map-tree ul { display: none; padding-left: 1.6rem; margin: 0.6rem 0 0; border-left: 3px solid var(--upch-gold); }
+    .map-tree ul { display: none; padding-left: 1.6rem; margin: 0.6rem 0 0; border-left: 3px solid var(--QII-gold); }
     .map-tree li.open > ul { display: block; animation: fadeIn 0.4s ease; }
     .map-tree li { margin: 0.4rem 0; }
-    .map-node { display: inline-block; background: var(--upch-dark); color: #fff; padding: 0.6rem 1.1rem; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s; border: 1px solid var(--upch-gold); }
-    .map-node:hover { background: var(--upch-gold); color: var(--upch-dark); transform: translateX(4px); }
+    .map-node { display: inline-block; background: var(--QII-dark); color: #fff; padding: 0.6rem 1.1rem; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s; border: 1px solid var(--QII-gold); }
+    .map-node:hover { background: var(--QII-gold); color: var(--QII-dark); transform: translateX(4px); }
     .map-node.root { background: var(--accent); color: white; font-size: 1.15rem; border: none; }
-    .map-node.branch { background: var(--upch-blue); }
-    .map-leaf { display: inline-block; background: #fff; color: var(--text); padding: 0.45rem 0.9rem; border-radius: 8px; font-size: 0.95rem; border: 2px solid var(--upch-gold); }
+    .map-node.branch { background: var(--QII-blue); }
+    .map-leaf { display: inline-block; background: #fff; color: var(--text); padding: 0.45rem 0.9rem; border-radius: 8px; font-size: 0.95rem; border: 2px solid var(--QII-gold); }
     li.has-children > .map-node::before { content: '▶ '; font-size: 0.8em; }
     li.has-children.open > .map-node::before { content: '▼ '; font-size: 0.8em; }
 
-    .img-guide-box { background: #f0f4f8; border: 2px dashed var(--upch-blue); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
-    .img-guide-title { font-weight: 700; color: var(--upch-blue); margin-bottom: 0.8rem; }
+    .img-guide-box { background: #f0f4f8; border: 2px dashed var(--QII-blue); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+    .img-guide-title { font-weight: 700; color: var(--QII-blue); margin-bottom: 0.8rem; }
 
     @media (max-width: 768px) {
         h1 { font-size: 1.8rem; } h2 { font-size: 1.5rem; } h3 { font-size: 1.2rem; }
-        .logo-container { flex-direction: column; gap: 1rem; } .logo-upch { width: 80px; }
+        .logo-container { flex-direction: column; gap: 1rem; } .Logo-QII.png { width: 80px; }
         .container { padding: 1rem; } .card { padding: 1.5rem; }
         .nav-buttons { gap: 0.5rem; } .nav-btn { padding: 0.6rem 1rem; font-size: 0.85rem; }
         .quiz-options { grid-template-columns: 1fr; }
@@ -168,11 +168,11 @@
 
 <header>
     <div class="logo-container">
-        <img src="logo-upch.png" alt="Logo UPCH" class="logo-upch">
+        <img src="Logo-QII.png.png" alt="Logo QII" class="Logo-QII.png">
         <div>
-            <h1>Universidad Peruana Cayetano Heredia</h1>
-            <p class="subtitle">Facultad de Ciencias y Filosofía • Departamento de Ciencias Exactas</p>
-            <p class="subtitle">Química II (Fisicoquímica) • Clase 1: Estado Líquido y Propiedades Fisicoquímicas</p>
+            <h1>QUÍMICA II</h1>
+            <p class="subtitle">De la molécula al bienestar — sintetiza la idea de progreso desde lo microscópico hacia lo humano.</p>
+            <p class="subtitle">Clase 1: Estado Líquido y Propiedades Fisicoquímicas</p>
         </div>
     </div>
 </header>
@@ -210,7 +210,7 @@
 
         <h3>🔬 Relevancia Profesional para Ciencias de la Salud</h3>
         <div class="bio-box">
-            <div><strong>¿Por qué el estudiante de la UPCH debe dominar el Estado Líquido?</strong>
+            <div><strong>¿Por qué el estudiante debe dominar el Estado Líquido?</strong>
                 <ul style="font-size: 1rem; margin-top: 1rem;">
                     <li>• <strong>Farmacia y Bioquímica:</strong> La tensión superficial determina la emulsificación de fármacos liposolubles. La viscosidad de jarabes y soluciones parenterales impacta la velocidad de flujo y la biodisponibilidad.</li>
                     <li>• <strong>Biología:</strong> El ascenso capilar explica el transporte de savia en el xilema. La tensión superficial alveolar es modulada por el surfactante pulmonar evitando el colapso respiratorio.</li>
@@ -830,7 +830,7 @@
         
         <div class="quiz-stats">
             <span class="quiz-stat" id="q-progress-text">Pregunta 0 de 10</span>
-            <span class="quiz-stat" id="q-score-text" style="background:var(--upch-gold); color:var(--upch-dark);">Puntaje: 0 / 10</span>
+            <span class="quiz-stat" id="q-score-text" style="background:var(--QII-gold); color:var(--QII-dark);">Puntaje: 0 / 10</span>
         </div>
         <div class="quiz-progress">
             <div class="quiz-progress-bar-bg"><div class="quiz-progress-bar" id="q-bar"></div></div>
