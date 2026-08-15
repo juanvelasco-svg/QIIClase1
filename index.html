@@ -856,470 +856,487 @@
 </footer>
 
 <script>
-// ================= NAVEGACIÓN DE SECCIONES Y PESTAÑAS =================
-function showSection(sectionId, btn) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById(sectionId).classList.add('active');
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    if (sectionId === 'quiz') {
-        if(currentQuizQuestions.length === 0) startNewCycle();
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+  // ================= NAVEGACIÓN DE SECCIONES Y PESTAÑAS =================
+  function showSection(sectionId, btn) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(sectionId).classList.add('active');
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      if (sectionId === 'quiz') {
+          if(currentQuizQuestions.length === 0) startNewCycle();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  
+  function showTab(groupId, tabId, btn) {
+      const g = document.getElementById(groupId);
+      g.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      g.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      if (btn) btn.classList.add('active');
+  }
+  
+  function toggleMap(node) {
+      node.parentElement.classList.toggle('open');
+  }
+  
+  function toggleDefinition(el) {
+      const d = el.querySelector('.glossary-definition');
+      d.classList.toggle('show');
+      el.style.background = d.classList.contains('show') ? '#fff9e6' : 'var(--white)';
+  }
+  
+  // ================= FLASHCARDS DATA & ENGINE =================
+  const flashcards = [
+      { q: '¿Qué fuerza intermolecular es la única presente en moléculas apolares como el pentano?', a: 'Fuerzas de dispersión o de London.' },
+      { q: '¿Qué tres elementos electronegativos permiten la formación de Puentes de Hidrógeno?', a: 'Flúor (F), Oxígeno (O) y Nitrógeno (N) [FON].' },
+      { q: '¿Cuáles son las unidades de la Tensión Superficial en el sistema CGS?', a: 'Dina/cm (equivalente a mN/m en el SI).' },
+      { q: 'Si las fuerzas de adhesión son mayores que las de cohesión, ¿qué forma adopta el menisco?', a: 'Forma un menisco cóncavo (como el agua sobre el vidrio limpio).' },
+      { q: 'Escriba la ecuación resumida de capilaridad para un líquido que moja el capilar (θ ≈ 0°):', a: 'γ = ½ · r · h · d · g (o 2γ = r·h·d·g).' },
+      { q: '¿Qué es el Poise y cuáles son sus dimensiones en CGS?', a: 'Es la unidad de viscosidad en CGS. Sus dimensiones son g·cm⁻¹·s⁻¹ (o dina·s/cm²).' },
+      { q: '¿Cómo se modifica el punto de ebullición del agua en una olla a presión y por qué?', a: 'Aumenta a 120°C - 130°C porque la presión interna supera a la atmosférica (1 atm).' },
+      { q: '¿Qué relación matemática expresa la Ecuación de Clausius-Clapeyron?', a: 'ln(P₂/P₁) = (ΔH_vap / R) · (1/T₁ - 1/T₂).' },
+      { q: '¿Qué representa el Punto Triple en un diagrama de fases?', a: 'La temperatura y presión donde coexisten en equilibrio las fases sólida, líquida y gaseosa.' },
+      { q: 'En la viscosidad medida por el viscosímetro de Ostwald, ¿con qué variables es proporcional η?', a: 'Es directamente proporcional a la densidad (d) y al tiempo de flujo (t).' }
+  ];
+  
+  let fcIndex = 0, fcFlipped = false, fcGood = 0, fcBad = 0, fcDone = false;
+  
+  function fcUpdateStats() {
+      document.getElementById('fc-good').textContent = fcGood;
+      document.getElementById('fc-bad').textContent = fcBad;
+      document.getElementById('fc-left').textContent = Math.max(0, flashcards.length - fcIndex);
+      const tg = parseInt(localStorage.getItem('q2FcGood') || '0', 10);
+      const tb = parseInt(localStorage.getItem('q2FcBad') || '0', 10);
+      document.getElementById('fc-hist').textContent = tg + ' ✓ / ' + tb + ' ✗';
+      document.getElementById('fc-bar').style.width = ((fcIndex / flashcards.length) * 100) + '%';
+  }
+  
+  function fcRenderCard() {
+      document.getElementById('fc-card').classList.remove('flipped');
+      fcFlipped = false;
+      document.getElementById('fc-question').textContent = flashcards[fcIndex].q;
+      document.getElementById('fc-answer').textContent = flashcards[fcIndex].a;
+      document.getElementById('btn-fc-good').disabled = true;
+      document.getElementById('btn-fc-bad').disabled = true;
+      fcUpdateStats();
+  }
+  
+  function flipCard() {
+      if (fcDone) return;
+      const c = document.getElementById('fc-card');
+      c.classList.toggle('flipped');
+      fcFlipped = c.classList.contains('flipped');
+      document.getElementById('btn-fc-good').disabled = !fcFlipped;
+      document.getElementById('btn-fc-bad').disabled = !fcFlipped;
+  }
+  
+  function gradeCard(ok) {
+      if (!fcFlipped || fcDone) return;
+      if (ok) {
+          fcGood++;
+          localStorage.setItem('q2FcGood', String(parseInt(localStorage.getItem('q2FcGood') || '0', 10) + 1));
+      } else {
+          fcBad++;
+          localStorage.setItem('q2FcBad', String(parseInt(localStorage.getItem('q2FcBad') || '0', 10) + 1));
+      }
+      fcIndex++;
+      if (fcIndex < flashcards.length) {
+          fcRenderCard();
+      } else {
+          fcFinish();
+      }
+  }
+  
+  function fcFinish() {
+      fcDone = true;
+      document.getElementById('fc-scene').style.display = 'none';
+      document.getElementById('fc-controls').style.display = 'none';
+      const pct = Math.round((fcGood / (fcGood + fcBad)) * 100);
+      const msg = pct >= 80 ? '🏆 ¡Excelente trabajo en Fisicoquímica!' : '📚 Te sugerimos repasar la sección de Conceptos.';
+      const s = document.getElementById('fc-summary');
+      s.innerHTML = '<strong>📊 Resumen de la Sesión:</strong> ✅ ' + fcGood + ' • ❌ ' + fcBad + ' • Precisión <strong>' + pct + '%</strong><br>' + msg;
+      s.classList.add('show');
+      fcUpdateStats();
+  }
+  
+  function resetFlashcards() {
+      fcIndex = 0; fcGood = 0; fcBad = 0; fcDone = false;
+      document.getElementById('fc-scene').style.display = 'block';
+      document.getElementById('fc-controls').style.display = 'flex';
+      document.getElementById('fc-summary').classList.remove('show');
+      fcRenderCard();
+  }
+  
+  function borrarHistorial() {
+      localStorage.removeItem('q2FcGood');
+      localStorage.removeItem('q2FcBad');
+      fcUpdateStats();
+  }
+  
+  // ================= HERRAMIENTAS Y CALCULADORAS =================
+  function toggleCapInputs() {
+      const target = document.getElementById('cap-target').value;
+      document.getElementById('group-cap-gamma').style.display = (target === 'r' || target === 'h') ? 'block' : 'none';
+      document.getElementById('group-cap-r').style.display = (target === 'gamma' || target === 'h') ? 'block' : 'none';
+      document.getElementById('group-cap-h').style.display = (target === 'gamma' || target === 'r') ? 'block' : 'none';
+  }
+  
+  function calcularCapilaridad() {
+      const target = document.getElementById('cap-target').value;
+      const resDiv = document.getElementById('cap-result');
+      const g = 980; // CGS cm/s2
+      const d = parseFloat(document.getElementById('cap-d').value);
+  
+      if (target === 'gamma') {
+          const r_mm = parseFloat(document.getElementById('cap-r').value);
+          const r_cm = r_mm / 10;
+          const h_cm = parseFloat(document.getElementById('cap-h').value);
+          const gamma = 0.5 * r_cm * h_cm * d * g;
+          resDiv.innerHTML = `<strong>Resultado:</strong> Tensión Superficial (γ) = <strong>${gamma.toFixed(2)} dina/cm</strong> (o mN/m).`;
+      } else if (target === 'r') {
+          const gamma = parseFloat(document.getElementById('cap-gamma').value);
+          const h_cm = parseFloat(document.getElementById('cap-h').value);
+          const r_cm = (2 * gamma) / (h_cm * d * g);
+          const r_mm = r_cm * 10;
+          resDiv.innerHTML = `<strong>Resultado:</strong> Radio del Capilar (r) = <strong>${r_cm.toFixed(4)} cm</strong> = <strong>${r_mm.toFixed(3)} mm</strong>.`;
+      } else if (target === 'h') {
+          const gamma = parseFloat(document.getElementById('cap-gamma').value);
+          const r_mm = parseFloat(document.getElementById('cap-r').value);
+          const r_cm = r_mm / 10;
+          const h_cm = (2 * gamma) / (r_cm * d * g);
+          resDiv.innerHTML = `<strong>Resultado:</strong> Altura de Ascenso (h) = <strong>${h_cm.toFixed(2)} cm</strong>.`;
+      }
+      resDiv.classList.add('show');
+  }
+  
+  function calcularClausius() {
+      const T1 = parseFloat(document.getElementById('cc-t1').value) + 273.15;
+      const P1 = parseFloat(document.getElementById('cc-p1').value);
+      const T2 = parseFloat(document.getElementById('cc-t2').value) + 273.15;
+      const P2 = parseFloat(document.getElementById('cc-p2').value);
+      const R = 8.314; // J/mol K
+  
+      const lnP = Math.log(P2 / P1);
+      const invT = (1 / T1) - (1 / T2);
+      const deltaH_J = (lnP * R) / invT;
+      const deltaH_kJ = deltaH_J / 1000;
+  
+      const resDiv = document.getElementById('cc-result');
+      resDiv.innerHTML = `<strong>Resultado:</strong> Calor Molar de Vaporización (ΔH_vap) = <strong>${deltaH_kJ.toFixed(2)} kJ/mol</strong> (${deltaH_J.toFixed(0)} J/mol).`;
+      resDiv.classList.add('show');
+  }
+  
+  function calcularOstwald() {
+      const t1 = parseFloat(document.getElementById('ost-t1').value);
+      const d1 = parseFloat(document.getElementById('ost-d1').value);
+      const t2 = parseFloat(document.getElementById('ost-t2').value);
+      const eta2 = parseFloat(document.getElementById('ost-eta2').value);
+  
+      const eta1 = eta2 * (d1 * t1) / (1.00 * t2);
+      const resDiv = document.getElementById('ost-result');
+      resDiv.innerHTML = `<strong>Resultado:</strong> Viscosidad de la Muestra (η₁) = <strong>${eta1.toFixed(3)} cP</strong> (mPa·s).`;
+      resDiv.classList.add('show');
+  }
+  
+  // ================= BANCO COMPLETO DE 30 PREGUNTAS Y MOTOR DE QUIZ RANDOM =================
+  const questionBank = [
+      {
+          q: "1. ¿Cuál de las siguientes moléculas presenta como ÚNICA fuerza intermolecular la fuerza de dispersión de London?",
+          options: ["Agua ($H_2O$)", "Pentano ($C_5H_{12}$)", "Ácido clorhídrico ($HCl$)", "Amoniaco ($NH_3$)"],
+          correct: 1,
+          exp: "El pentano es un hidrocarburo apolar, por lo que únicamente presenta fuerzas de dispersión o de London."
+      },
+      {
+          q: "2. La tensión superficial del agua disminuye cuando aumenta la temperatura. ¿A qué se debe este fenómeno?",
+          options: ["Aumenta la densidad del fluido", "Las interacciones intermoleculares se debilitan por la energía térmica", "Aumenta el ángulo de contacto con el tubo", "Aumenta el peso molecular del agua"],
+          correct: 1,
+          exp: "Al elevar la temperatura, el incremento de energía cinética rompe parcialmente los puentes de H, disminuyendo la tensión superficial."
+      },
+      {
+          q: "3. ¿Qué menisco y qué relación de fuerzas caracteriza al mercurio en un tubo capilar de vidrio?",
+          options: ["Menisco cóncavo, Adhesión > Cohesión", "Menisco plano, Cohesión = Adhesión", "Menisco convexo, Cohesión > Adhesión", "Menisco cóncavo, Cohesión > Adhesión"],
+          correct: 2,
+          exp: "En el mercurio las fuerzas de cohesión interatómicas superan la adhesión con el vidrio, formando un menisco convexo."
+      },
+      {
+          q: "4. En la ecuación de capilaridad $\\gamma = \\frac{1}{2} r \\cdot h \\cdot d \\cdot g$, si el radio del capilar se reduce a la mitad, ¿qué sucede con la altura del líquido $h$?",
+          options: ["Se reduce a la mitad", "Permanecerá constante", "Se duplica", "Se cuadruplica"],
+          correct: 2,
+          exp: "La altura $h$ es inversamente proporcional al radio $r$ ($h = \\frac{2\\gamma}{r \\cdot d \\cdot g}$). Si $r$ baja a la mitad, $h$ se duplica."
+      },
+      {
+          q: "5. ¿Cuál es la unidad de viscosidad en el sistema CGS equivalente a $\\text{g}\\cdot\\text{cm}^{-1}\\cdot\\text{s}^{-1}$?",
+          options: ["Pascal segundo", "Poise", "Dina/cm", "Joule/mol"],
+          correct: 1,
+          exp: "El Poise es la unidad CGS fundamental para la viscosidad dinámica."
+      },
+      {
+          q: "6. En el punto de ebullición de un líquido, ¿qué condición termodinámica se cumple obligatoriamente?",
+          options: ["La presión de vapor es igual a cero", "La presión de vapor iguala a la presión externa ejercida", "La temperatura alcanza el punto crítico", "El líquido se vuelve incompresible"],
+          correct: 1,
+          exp: "La ebullición ocurre cuando la presión de vapor del líquido se iguala a la presión atmosférica u externa."
+      },
+      {
+          q: "7. ¿Por qué las ollas a presión cocinan los alimentos mucho más rápido?",
+          options: ["Porque reducen el calor latente", "Aumentan la presión externa elevando el punto de ebullición del agua a $120^\\circ\\text{C}-130^\\circ\\text{C}$", "Reducen la viscosidad del agua a cero", "Evitan la evaporación del alimento"],
+          correct: 1,
+          exp: "Al confinar el vapor, la presión sube $> 1\\text{ atm}$, elevando la temperatura de ebullición a $120^\\circ\\text{C}-130^\\circ\\text{C}$."
+      },
+      {
+          q: "8. En una gráfica de la Ecuación de Clausius-Clapeyron ($\\ln P$ vs $1/T$), ¿qué representa la pendiente de la recta?",
+          options: ["$-\\Delta H_{vap} / R$", "$\\Delta H_{vap} \\cdot R$", "$R / \\Delta H_{vap}$", "$T_{ebullicion}$"],
+          correct: 0,
+          exp: "La forma lineal $\\ln P = (-\\Delta H_{vap} / R)(1/T) + C$ indica que la pendiente es $-\\Delta H_{vap} / R$."
+      },
+      {
+          q: "9. ¿Cuál de las siguientes moléculas es capaz de formar Puentes de Hidrógeno entre sus mismas moléculas?",
+          options: ["$CH_4$ (Metano)", "$HCl$ (Ácido clorhídrico)", "$NH_3$ (Amoniaco)", "$H_2S$ (Sulfuro de hidrógeno)"],
+          correct: 2,
+          exp: "El amoniaco ($NH_3$) tiene Hidrógeno unido directamente a Nitrógeno (FON), cumpliendo el requisito."
+      },
+      {
+          q: "10. En los alveolos pulmonares, la sustancia que evita el colapso reduciendo la tensión superficial se denomina:",
+          options: ["Hemoglobina", "Surfactante pulmonar (DPPC)", "Mucina", "Albúmina"],
+          correct: 1,
+          exp: "El surfactante pulmonar (fosfolípido DPPC) reduce la tensión superficial en la interfaz aire-agua del alveolo."
+      },
+      {
+          q: "11. Si una molécula no tiene pares libres en el átomo central y todos sus ligandos son idénticos, la molécula es:",
+          options: ["Polar", "Apolar", "Iónica", "Anfótera"],
+          correct: 1,
+          exp: "Es la regla práctica de simetría molecular para definir moléculas apolares."
+      },
+      {
+          q: "12. La capilaridad en el xilema de las plantas superiores depende principalmente de:",
+          options: ["Cohesión entre $H_2O$ y adhesión con la pared celular", "Viscosidad del mercurio", "Presión de vapor del suelo", "Fuerzas de London únicamente"],
+          correct: 0,
+          exp: "La teoría de cohesión-tensión combina puentes de H entre moléculas de agua y adhesión a paredes xilemáticas."
+      },
+      {
+          q: "13. ¿Qué viscosidad exhibirá un líquido cuyas moléculas son largas, ramificadas y con intensas fuerzas intermoleculares?",
+          options: ["Muy baja", "Nula", "Alta", "Igual a la del gas"],
+          correct: 2,
+          exp: "Las cadenas largas y ramificadas aumentan el enredo molecular y la fricción interna, elevando la viscosidad."
+      },
+      {
+          q: "14. ¿Cuál de los siguientes pares representa una propiedad intensiva del estado líquido?",
+          options: ["Masa y Tensión superficial", "Viscosidad y Presión de vapor", "Volumen y Viscosidad", "Peso y Punto de ebullición"],
+          correct: 1,
+          exp: "Tanto la viscosidad como la presión de vapor no dependen de la cantidad de masa examinada."
+      },
+      {
+          q: "15. Para el cálculo CGS de tensión superficial, la aceleración de la gravedad debe ingresarse como:",
+          options: ["$9.81\\text{ m/s}^2$", "$980\\text{ cm/s}^2$", "$1.00\\text{ g/cm}^3$", "$760\\text{ mmHg}$"],
+          correct: 1,
+          exp: "En CGS, $g = 980\\text{ cm/s}^2$ es la cifra coherente con dina, cm y gramos."
+      },
+      {
+          q: "16. La presión de vapor de un líquido depende exclusivamente de:",
+          options: ["El volumen del recipiente", "La temperatura y la naturaleza química de la sustancia", "La forma del envase", "La cantidad de líquido libre"],
+          correct: 1,
+          exp: "La presión de vapor es una propiedad intensiva que varía solo con la temperatura y la fuerza intermolecular de la sustancia."
+      },
+      {
+          q: "17. En la disfagia pediátrica u geriátrica, ¿qué parámetro fisicoquímico se modifica con espesantes?",
+          options: ["Tensión superficial", "Viscosidad", "Punto triple", "Calor latente"],
+          correct: 1,
+          exp: "Se incrementa la viscosidad para enlentecer el tránsito faríngeo del alimento líquido."
+      },
+      {
+          q: "18. ¿Qué tipo de menisco forma el agua pura en un tubo de plástico o cera apolar?",
+          options: ["Cóncavo pronunciado", "Convexo o casi plano porque la adhesión es débil", "Indefinido", "Vertical"],
+          correct: 1,
+          exp: "Dado que la cera es apolar y no forma puentes de H, la adhesión agua-cera es inferior a la cohesión."
+      },
+      {
+          q: "19. El método del viscosímetro de Ostwald se basa analíticamente en la ecuación de:",
+          options: ["Clausius-Clapeyron", "Poiseuille", "Van der Waals", "Gibbs-Helmholtz"],
+          correct: 1,
+          exp: "La ley de Poiseuille rige el flujo de fluidos en tubos capilares del viscosímetro."
+      },
+      {
+          q: "20. Cuando un líquido alcanza su punto crítico en el diagrama de fases:",
+          options: ["Solidifica instantáneamente", "Las fases líquida y gaseosa se vuelven indistinguibles", "Su presión de vapor cae a cero", "La viscosidad tiende a infinito"],
+          correct: 1,
+          exp: "Al superar la T y P críticas desaparece el menisco de separación, convirtiéndose en fluido supercrítico."
+      },
+      {
+          q: "21. ¿Qué sustancia tiene mayor presión de vapor a temperatura ambiente ($20^\\circ\\text{C}$)?",
+          options: ["Agua ($H_2O$)", "Éter dietílico (volátil)", "Glicerol (viscoso)", "Aceite mineral"],
+          correct: 1,
+          exp: "Las sustancias volátiles con débiles fuerzas intermoleculares tienen presiones de vapor elevadas."
+      },
+      {
+          q: "22. En la digestión alimentaria, las sales biliares facilitan el trabajo de la lipasa porque:",
+          options: ["Elevan la viscosidad del quimo", "Reducen la tensión interfacial lipido-agua permitiendo la emulsificación", "Aumentan la presión de vapor de los triglicéridos", "Aumentan la capilaridad del duodeno"],
+          correct: 1,
+          exp: "Las sales biliares son tensoactivos biológicos que emulsifican grasas disminuyendo la tensión interfacial."
+      },
+      {
+          q: "23. En la formulación de colirios oftálmicos, aumentar la viscosidad busca:",
+          options: ["Disminuir el ardor", "Aumentar el tiempo de retención del fármaco en la córnea", "Evitar el uso de agua", "Aumentar la volatilidad"],
+          correct: 1,
+          exp: "El incremento de la viscosidad evita que el parpadeo y drenaje lagrimal remuevan rápido el medicamento."
+      },
+      {
+          q: "24. ¿Cuál de los siguientes fluidos presenta flujo laminar con máxima velocidad en el centro del capilar?",
+          options: ["Agua fluyendo por un tubo circular a baja velocidad", "Un gas en expansión explosiva", "Vapor supercrítico turbulento", "Un sólido cristalino"],
+          correct: 0,
+          exp: "El perfil parabólico de flujo laminar alcanza su pico en el centro del tubo capilar."
+      },
+      {
+          q: "25. La constante $R$ utilizada en la ecuación de Clausius-Clapeyron en el SI es:",
+          options: ["$0.0821\\text{ L}\\cdot\\text{atm}/(\\text{mol}\\cdot\\text{K})$", "$8.314\\text{ J}/(\\text{mol}\\cdot\\text{K})$", "$62.4\\text{ mmHg}\\cdot\\text{L}/(\\text{mol}\\cdot\\text{K})$", "$1.987\\text{ cal}/(\\text{mol}\\cdot\\text{K})$"],
+          correct: 1,
+          exp: "Para la obtención de valores energéticos en Joules/kJ en Clausius-Clapeyron se usa $R = 8.314\\text{ J}/(\\text{mol}\\cdot\\text{K})$."
+      },
+      {
+          q: "26. Un líquido humecta una superficie sólida cuando:",
+          options: ["Las fuerzas de adhesión superan a las de cohesión", "Las fuerzas de cohesión superan a las de adhesión", "La viscosidad es infinita", "La temperatura es 0 Kelvin"],
+          correct: 0,
+          exp: "El mojado o humectación requiere de fuerzas adhesivas líquido-sólido preponderantes."
+      },
+      {
+          q: "27. Al aumentar la masa molar de una serie de alcanos lineales, la fuerza de London y el punto de ebullición:",
+          options: ["Disminuyen", "Aumentan", "Permanecen inalterados", "Se vuelven nulos"],
+          correct: 1,
+          exp: "A mayor tamaño y masa molecular, mayor polarizabilidad y mayores fuerzas de London, elevando el punto de ebullición."
+      },
+      {
+          q: "28. ¿Qué es el equilibrio dinámico en un líquido encerrado?",
+          options: ["Cuando ya no se evapora nada de líquido", "Cuando la velocidad de evaporación iguala a la velocidad de condensación", "Cuando el recipiente explota por presión", "Cuando la viscosidad se iguala al peso"],
+          correct: 1,
+          exp: "Es un proceso reversible donde ambas velocidades opuestas se equiparan cuantitativamente."
+      },
+      {
+          q: "29. ¿Qué relación hay entre las fuerzas intermoleculares de un líquido y su viscosidad?",
+          options: ["A mayor fuerza intermolecular, menor viscosidad", "A mayor fuerza intermolecular, mayor viscosidad", "No existe relación física", "Inversamente proporcional al cuadrado de la masa"],
+          correct: 1,
+          exp: "Fuerzas de atracción más intensas dificultan el deslizamiento entre capas moleculares, elevando la viscosidad."
+      },
+      {
+          q: "30. Si el ángulo de contacto de un líquido con el tubo capilar es $\\theta \\approx 0^\\circ$, el término $\\cos(\\theta)$ en la ecuación equivale a:",
+          options: ["0", "1", "0.5", "Infinito"],
+          correct: 1,
+          exp: "El coseno de 0 grados es 1, por lo que el término se simplifica en la expresión."
+      }
+  ];
+  
+  let currentQuizQuestions = [];
+  let quizAnswersUser = [];
+  
+  function selectRandomQuestions() {
+      const shuffled = [...questionBank].sort(() => 0.5 - Math.random());
+      currentQuizQuestions = shuffled.slice(0, 10);
+      quizAnswersUser = new Array(10).fill(null);
+  }
+  
+  function renderQuiz() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = '';
+  
+      currentQuizQuestions.forEach((qObj, index) => {
+          const qCard = document.createElement('div');
+          qCard.className = 'quiz-question-card';
+  
+          let optionsHTML = '';
+          qObj.options.forEach((optText, optIdx) => {
+              optionsHTML += `<button class="quiz-option" id="opt-${index}-${optIdx}" onclick="selectAnswer(${index}, ${optIdx})">${optText}</button>`;
+          });
+  
+          qCard.innerHTML = `
+              <div class="quiz-question">Pregunta ${index + 1}: ${qObj.q}</div>
+              <div class="quiz-options">${optionsHTML}</div>
+              <div class="quiz-explanation" id="exp-${index}">💡 <strong>Explicación:</strong> ${qObj.exp}</div>
+          `;
+          container.appendChild(qCard);
+      });
+  
+      updateQuizProgress();
+      if (window.MathJax) {
+          MathJax.typesetPromise();
+      }
+  }
+  
+  function selectAnswer(qIdx, optIdx) {
+      if (quizAnswersUser[qIdx] !== null) return; // evita re-seleccionar
+  
+      quizAnswersUser[qIdx] = optIdx;
+      const qObj = currentQuizQuestions[qIdx];
+      const isCorrect = optIdx === qObj.correct;
+  
+      const selectedBtn = document.getElementById(`opt-${qIdx}-${optIdx}`);
+      if (isCorrect) {
+          selectedBtn.classList.add('correct');
+      } else {
+          selectedBtn.classList.add('incorrect');
+          document.getElementById(`opt-${qIdx}-${qObj.correct}`).classList.add('correct');
+      }
+  
+      // Deshabilitar botones de esa pregunta
+      for (let i = 0; i < qObj.options.length; i++) {
+          document.getElementById(`opt-${qIdx}-${i}`).disabled = true;
+      }
+  
+      // Mostrar explicación
+      document.getElementById(`exp-${qIdx}`).style.display = 'block';
+  
+      updateQuizProgress();
+  }
+  
+  function updateQuizProgress() {
+      const answeredCount = quizAnswersUser.filter(a => a !== null).length;
+      let score = 0;
+      quizAnswersUser.forEach((ans, idx) => {
+          if (ans !== null && ans === currentQuizQuestions[idx].correct) {
+              score++;
+          }
+      });
+  
+      document.getElementById('q-progress-text').textContent = `Pregunta ${answeredCount} de 10 respondidas`;
+      document.getElementById('q-score-text').textContent = `Puntaje: ${score} / 10`;
+      document.getElementById('q-bar').style.width = `${(answeredCount / 10) * 100}%`;
+  
+      if (answeredCount === 10) {
+          const resDiv = document.getElementById('quiz-result');
+          const pct = (score / 10) * 100;
+          let feedback = pct >= 80 ? '🎉 ¡Felicidades! Tienes un excelente conocimiento del estado líquido.' : '📖 Te sugerimos revisar las explicaciones e intentar un nuevo ciclo.';
+          resDiv.innerHTML = `<strong>Resultado Final del Ciclo:</strong> ${score} / 10 aciertos (<strong>${pct}%</strong>).<br>${feedback}`;
+          resDiv.classList.add('show');
+      }
+  }
+  
+  function startNewCycle() {
+      selectRandomQuestions();
+      renderQuiz();
+      const resDiv = document.getElementById('quiz-result');
+      resDiv.classList.remove('show');
+      resDiv.innerHTML = '';
+  }
+  
+  // ================= INICIALIZACIÓN GENERAL =================
+  window.addEventListener('DOMContentLoaded', () => {
+      fcRenderCard();
+      startNewCycle();
+  });
 
-function showTab(groupId, tabId, btn) {
-    const g = document.getElementById(groupId);
-    g.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    g.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    if (btn) btn.classList.add('active');
-}
-
-function toggleMap(node) {
-    node.parentElement.classList.toggle('open');
-}
-
-function toggleDefinition(el) {
-    const d = el.querySelector('.glossary-definition');
-    d.classList.toggle('show');
-    el.style.background = d.classList.contains('show') ? '#fff9e6' : 'var(--white)';
-}
-
-// ================= FLASHCARDS DATA & ENGINE =================
-const flashcards = [
-    { q: '¿Qué fuerza intermolecular es la única presente en moléculas apolares como el pentano?', a: 'Fuerzas de dispersión o de London.' },
-    { q: '¿Qué tres elementos electronegativos permiten la formación de Puentes de Hidrógeno?', a: 'Flúor (F), Oxígeno (O) y Nitrógeno (N) [FON].' },
-    { q: '¿Cuáles son las unidades de la Tensión Superficial en el sistema CGS?', a: 'Dina/cm (equivalente a mN/m en el SI).' },
-    { q: 'Si las fuerzas de adhesión son mayores que las de cohesión, ¿qué forma adopta el menisco?', a: 'Forma un menisco cóncavo (como el agua sobre el vidrio limpio).' },
-    { q: 'Escriba la ecuación resumida de capilaridad para un líquido que moja el capilar (θ ≈ 0°):', a: 'γ = ½ · r · h · d · g (o 2γ = r·h·d·g).' },
-    { q: '¿Qué es el Poise y cuáles son sus dimensiones en CGS?', a: 'Es la unidad de viscosidad en CGS. Sus dimensiones son g·cm⁻¹·s⁻¹ (o dina·s/cm²).' },
-    { q: '¿Cómo se modifica el punto de ebullición del agua en una olla a presión y por qué?', a: 'Aumenta a 120°C - 130°C porque la presión interna supera a la atmosférica (1 atm).' },
-    { q: '¿Qué relación matemática expresa la Ecuación de Clausius-Clapeyron?', a: 'ln(P₂/P₁) = (ΔH_vap / R) · (1/T₁ - 1/T₂).' },
-    { q: '¿Qué representa el Punto Triple en un diagrama de fases?', a: 'La temperatura y presión donde coexisten en equilibrio las fases sólida, líquida y gaseosa.' },
-    { q: 'En la viscosidad medida por el viscosímetro de Ostwald, ¿con qué variables es proporcional η?', a: 'Es directamente proporcional a la densidad (d) y al tiempo de flujo (t).' }
-];
-
-let fcIndex = 0, fcFlipped = false, fcGood = 0, fcBad = 0, fcDone = false;
-
-function fcUpdateStats() {
-    document.getElementById('fc-good').textContent = fcGood;
-    document.getElementById('fc-bad').textContent = fcBad;
-    document.getElementById('fc-left').textContent = Math.max(0, flashcards.length - fcIndex);
-    const tg = parseInt(localStorage.getItem('q2FcGood') || '0', 10);
-    const tb = parseInt(localStorage.getItem('q2FcBad') || '0', 10);
-    document.getElementById('fc-hist').textContent = tg + ' ✓ / ' + tb + ' ✗';
-    document.getElementById('fc-bar').style.width = ((fcIndex / flashcards.length) * 100) + '%';
-}
-
-function fcRenderCard() {
-    document.getElementById('fc-card').classList.remove('flipped');
-    fcFlipped = false;
-    document.getElementById('fc-question').textContent = flashcards[fcIndex].q;
-    document.getElementById('fc-answer').textContent = flashcards[fcIndex].a;
-    document.getElementById('btn-fc-good').disabled = true;
-    document.getElementById('btn-fc-bad').disabled = true;
-    fcUpdateStats();
-}
-
-function flipCard() {
-    if (fcDone) return;
-    const c = document.getElementById('fc-card');
-    c.classList.toggle('flipped');
-    fcFlipped = c.classList.contains('flipped');
-    document.getElementById('btn-fc-good').disabled = !fcFlipped;
-    document.getElementById('btn-fc-bad').disabled = !fcFlipped;
-}
-
-function gradeCard(ok) {
-    if (!fcFlipped || fcDone) return;
-    if (ok) {
-        fcGood++;
-        localStorage.setItem('q2FcGood', String(parseInt(localStorage.getItem('q2FcGood') || '0', 10) + 1));
-    } else {
-        fcBad++;
-        localStorage.setItem('q2FcBad', String(parseInt(localStorage.getItem('q2FcBad') || '0', 10) + 1));
-    }
-    fcIndex++;
-    if (fcIndex < flashcards.length) {
-        fcRenderCard();
-    } else {
-        fcFinish();
-    }
-}
-
-function fcFinish() {
-    fcDone = true;
-    document.getElementById('fc-scene').style.display = 'none';
-    document.getElementById('fc-controls').style.display = 'none';
-    const pct = Math.round((fcGood / (fcGood + fcBad)) * 100);
-    const msg = pct >= 80 ? '🏆 ¡Excelente trabajo en Fisicoquímica!' : '📚 Te sugerimos repasar la sección de Conceptos.';
-    const s = document.getElementById('fc-summary');
-    s.innerHTML = '<strong>📊 Resumen de la Sesión:</strong> ✅ ' + fcGood + ' • ❌ ' + fcBad + ' • Precisión <strong>' + pct + '%</strong><br>' + msg;
-    s.classList.add('show');
-    fcUpdateStats();
-}
-
-function resetFlashcards() {
-    fcIndex = 0; fcGood = 0; fcBad = 0; fcDone = false;
-    document.getElementById('fc-scene').style.display = 'block';
-    document.getElementById('fc-controls').style.display = 'flex';
-    document.getElementById('fc-summary').classList.remove('show');
-    fcRenderCard();
-}
-
-function borrarHistorial() {
-    localStorage.removeItem('q2FcGood');
-    localStorage.removeItem('q2FcBad');
-    fcUpdateStats();
-}
-
-// ================= HERRAMIENTAS Y CALCULADORAS =================
-function toggleCapInputs() {
-    const target = document.getElementById('cap-target').value;
-    document.getElementById('group-cap-gamma').style.display = (target === 'r' || target === 'h') ? 'block' : 'none';
-    document.getElementById('group-cap-r').style.display = (target === 'gamma' || target === 'h') ? 'block' : 'none';
-    document.getElementById('group-cap-h').style.display = (target === 'gamma' || target === 'r') ? 'block' : 'none';
-}
-
-function calcularCapilaridad() {
-    const target = document.getElementById('cap-target').value;
-    const resDiv = document.getElementById('cap-result');
-    const g = 980; // CGS cm/s2
-    const d = parseFloat(document.getElementById('cap-d').value);
-
-    if (target === 'gamma') {
-        const r_mm = parseFloat(document.getElementById('cap-r').value);
-        const r_cm = r_mm / 10;
-        const h_cm = parseFloat(document.getElementById('cap-h').value);
-        const gamma = 0.5 * r_cm * h_cm * d * g;
-        resDiv.innerHTML = `<strong>Resultado:</strong> Tensión Superficial (γ) = <strong>${gamma.toFixed(2)} dina/cm</strong> (o mN/m).`;
-    } else if (target === 'r') {
-        const gamma = parseFloat(document.getElementById('cap-gamma').value);
-        const h_cm = parseFloat(document.getElementById('cap-h').value);
-        const r_cm = (2 * gamma) / (h_cm * d * g);
-        const r_mm = r_cm * 10;
-        resDiv.innerHTML = `<strong>Resultado:</strong> Radio del Capilar (r) = <strong>${r_cm.toFixed(4)} cm</strong> = <strong>${r_mm.toFixed(3)} mm</strong>.`;
-    } else if (target === 'h') {
-        const gamma = parseFloat(document.getElementById('cap-gamma').value);
-        const r_mm = parseFloat(document.getElementById('cap-r').value);
-        const r_cm = r_mm / 10;
-        const h_cm = (2 * gamma) / (r_cm * d * g);
-        resDiv.innerHTML = `<strong>Resultado:</strong> Altura de Ascenso (h) = <strong>${h_cm.toFixed(2)} cm</strong>.`;
-    }
-    resDiv.classList.add('show');
-}
-
-function calcularClausius() {
-    const T1 = parseFloat(document.getElementById('cc-t1').value) + 273.15;
-    const P1 = parseFloat(document.getElementById('cc-p1').value);
-    const T2 = parseFloat(document.getElementById('cc-t2').value) + 273.15;
-    const P2 = parseFloat(document.getElementById('cc-p2').value);
-    const R = 8.314; // J/mol K
-
-    const lnP = Math.log(P2 / P1);
-    const invT = (1 / T1) - (1 / T2);
-    const deltaH_J = (lnP * R) / invT;
-    const deltaH_kJ = deltaH_J / 1000;
-
-    const resDiv = document.getElementById('cc-result');
-    resDiv.innerHTML = `<strong>Resultado:</strong> Calor Molar de Vaporización (ΔH_vap) = <strong>${deltaH_kJ.toFixed(2)} kJ/mol</strong> (${deltaH_J.toFixed(0)} J/mol).`;
-    resDiv.classList.add('show');
-}
-
-function calcularOstwald() {
-    const t1 = parseFloat(document.getElementById('ost-t1').value);
-    const d1 = parseFloat(document.getElementById('ost-d1').value);
-    const t2 = parseFloat(document.getElementById('ost-t2').value);
-    const eta2 = parseFloat(document.getElementById('ost-eta2').value);
-
-    const eta1 = eta2 * (d1 * t1) / (1.00 * t2);
-    const resDiv = document.getElementById('ost-result');
-    resDiv.innerHTML = `<strong>Resultado:</strong> Viscosidad de la Muestra (η₁) = <strong>${eta1.toFixed(3)} cP</strong> (mPa·s).`;
-    resDiv.classList.add('show');
-}
-
-// ================= BANCO COMPLETO DE 30 PREGUNTAS Y MOTOR DE QUIZ RANDOM =================
-const questionBank = [
-    {
-        q: "1. ¿Cuál de las siguientes moléculas presenta como ÚNICA fuerza intermolecular la fuerza de dispersión de London?",
-        options: ["Agua ($H_2O$)", "Pentano ($C_5H_{12}$)", "Ácido clorhídrico ($HCl$)", "Amoniaco ($NH_3$)"],
-        correct: 1,
-        exp: "El pentano es un hidrocarburo apolar, por lo que únicamente presenta fuerzas de dispersión o de London."
-    },
-    {
-        q: "2. La tensión superficial del agua disminuye cuando aumenta la temperatura. ¿A qué se debe este fenómeno?",
-        options: ["Aumenta la densidad del fluido", "Las interacciones intermoleculares se debilitan por la energía térmica", "Aumenta el ángulo de contacto con el tubo", "Aumenta el peso molecular del agua"],
-        correct: 1,
-        exp: "Al elevar la temperatura, el incremento de energía cinética rompe parcialmente los puentes de H, disminuyendo la tensión superficial."
-    },
-    {
-        q: "3. ¿Qué menisco y qué relación de fuerzas caracteriza al mercurio en un tubo capilar de vidrio?",
-        options: ["Menisco cóncavo, Adhesión > Cohesión", "Menisco plano, Cohesión = Adhesión", "Menisco convexo, Cohesión > Adhesión", "Menisco cóncavo, Cohesión > Adhesión"],
-        correct: 2,
-        exp: "En el mercurio las fuerzas de cohesión interatómicas superan la adhesión con el vidrio, formando un menisco convexo."
-    },
-    {
-        q: "4. En la ecuación de capilaridad $\\gamma = \\frac{1}{2} r \\cdot h \\cdot d \\cdot g$, si el radio del capilar se reduce a la mitad, ¿qué sucede con la altura del líquido $h$?",
-        options: ["Se reduce a la mitad", "Permanecerá constante", "Se duplica", "Se cuadruplica"],
-        correct: 2,
-        exp: "La altura $h$ es inversamente proporcional al radio $r$ ($h = \\frac{2\\gamma}{r \\cdot d \\cdot g}$). Si $r$ baja a la mitad, $h$ se duplica."
-    },
-    {
-        q: "5. ¿Cuál es la unidad de viscosidad en el sistema CGS equivalente a $\\text{g}\\cdot\\text{cm}^{-1}\\cdot\\text{s}^{-1}$?",
-        options: ["Pascal segundo", "Poise", "Dina/cm", "Joule/mol"],
-        correct: 1,
-        exp: "El Poise es la unidad CGS fundamental para la viscosidad dinámica."
-    },
-    {
-        q: "6. En el punto de ebullición de un líquido, ¿qué condición termodinámica se cumple obligatoriamente?",
-        options: ["La presión de vapor es igual a cero", "La presión de vapor iguala a la presión externa ejercida", "La temperatura alcanza el punto crítico", "El líquido se vuelve incompresible"],
-        correct: 1,
-        exp: "La ebullición ocurre cuando la presión de vapor del líquido se iguala a la presión atmosférica u externa."
-    },
-    {
-        q: "7. ¿Por qué las ollas a presión cocinan los alimentos mucho más rápido?",
-        options: ["Porque reducen el calor latente", "Aumentan la presión externa elevando el punto de ebullición del agua a $120^\\circ\\text{C}-130^\\circ\\text{C}$", "Reducen la viscosidad del agua a cero", "Evitan la evaporación del alimento"],
-        correct: 1,
-        exp: "Al confinar el vapor, la presión sube $> 1\\text{ atm}$, elevando la temperatura de ebullición a $120^\\circ\\text{C}-130^\\circ\\text{C}$."
-    },
-    {
-        q: "8. En una gráfica de la Ecuación de Clausius-Clapeyron ($\\ln P$ vs $1/T$), ¿qué representa la pendiente de la recta?",
-        options: ["$-\\Delta H_{vap} / R$", "$\\Delta H_{vap} \\cdot R$", "$R / \\Delta H_{vap}$", "$T_{ebullicion}$"],
-        correct: 0,
-        exp: "La forma lineal $\\ln P = (-\\Delta H_{vap} / R)(1/T) + C$ indica que la pendiente es $-\\Delta H_{vap} / R$."
-    },
-    {
-        q: "9. ¿Cuál de las siguientes moléculas es capaz de formar Puentes de Hidrógeno entre sus mismas moléculas?",
-        options: ["$CH_4$ (Metano)", "$HCl$ (Ácido clorhídrico)", "$NH_3$ (Amoniaco)", "$H_2S$ (Sulfuro de hidrógeno)"],
-        correct: 2,
-        exp: "El amoniaco ($NH_3$) tiene Hidrógeno unido directamente a Nitrógeno (FON), cumpliendo el requisito."
-    },
-    {
-        q: "10. En los alveolos pulmonares, la sustancia que evita el colapso reduciendo la tensión superficial se denomina:",
-        options: ["Hemoglobina", "Surfactante pulmonar (DPPC)", "Mucina", "Albúmina"],
-        correct: 1,
-        exp: "El surfactante pulmonar (fosfolípido DPPC) reduce la tensión superficial en la interfaz aire-agua del alveolo."
-    },
-    {
-        q: "11. Si una molécula no tiene pares libres en el átomo central y todos sus ligandos son idénticos, la molécula es:",
-        options: ["Polar", "Apolar", "Iónica", "Anfótera"],
-        correct: 1,
-        exp: "Es la regla práctica de simetría molecular para definir moléculas apolares."
-    },
-    {
-        q: "12. La capilaridad en el xilema de las plantas superiores depende principalmente de:",
-        options: ["Cohesión entre $H_2O$ y adhesión con la pared celular", "Viscosidad del mercurio", "Presión de vapor del suelo", "Fuerzas de London únicamente"],
-        correct: 0,
-        exp: "La teoría de cohesión-tensión combina puentes de H entre moléculas de agua y adhesión a paredes xilemáticas."
-    },
-    {
-        q: "13. ¿Qué viscosidad exhibirá un líquido cuyas moléculas son largas, ramificadas y con intensas fuerzas intermoleculares?",
-        options: ["Muy baja", "Nula", "Alta", "Igual a la del gas"],
-        correct: 2,
-        exp: "Las cadenas largas y ramificadas aumentan el enredo molecular y la fricción interna, elevando la viscosidad."
-    },
-    {
-        q: "14. ¿Cuál de los siguientes pares representa una propiedad intensiva del estado líquido?",
-        options: ["Masa y Tensión superficial", "Viscosidad y Presión de vapor", "Volumen y Viscosidad", "Peso y Punto de ebullición"],
-        correct: 1,
-        exp: "Tanto la viscosidad como la presión de vapor no dependen de la cantidad de masa examinada."
-    },
-    {
-        q: "15. Para el cálculo CGS de tensión superficial, la aceleración de la gravedad debe ingresarse como:",
-        options: ["$9.81\\text{ m/s}^2$", "$980\\text{ cm/s}^2$", "$1.00\\text{ g/cm}^3$", "$760\\text{ mmHg}$"],
-        correct: 1,
-        exp: "En CGS, $g = 980\\text{ cm/s}^2$ es la cifra coherente con dina, cm y gramos."
-    },
-    {
-        q: "16. La presión de vapor de un líquido depende exclusivamente de:",
-        options: ["El volumen del recipiente", "La temperatura y la naturaleza química de la sustancia", "La forma del envase", "La cantidad de líquido libre"],
-        correct: 1,
-        exp: "La presión de vapor es una propiedad intensiva que varía solo con la temperatura y la fuerza intermolecular de la sustancia."
-    },
-    {
-        q: "17. En la disfagia pediátrica u geriátrica, ¿qué parámetro fisicoquímico se modifica con espesantes?",
-        options: ["Tensión superficial", "Viscosidad", "Punto triple", "Calor latente"],
-        correct: 1,
-        exp: "Se incrementa la viscosidad para enlentecer el tránsito faríngeo del alimento líquido."
-    },
-    {
-        q: "18. ¿Qué tipo de menisco forma el agua pura en un tubo de plástico o cera apolar?",
-        options: ["Cóncavo pronunciado", "Convexo o casi plano porque la adhesión es débil", "Indefinido", "Vertical"],
-        correct: 1,
-        exp: "Dado que la cera es apolar y no forma puentes de H, la adhesión agua-cera es inferior a la cohesión."
-    },
-    {
-        q: "19. El método del viscosímetro de Ostwald se basa analíticamente en la ecuación de:",
-        options: ["Clausius-Clapeyron", "Poiseuille", "Van der Waals", "Gibbs-Helmholtz"],
-        correct: 1,
-        exp: "La ley de Poiseuille rige el flujo de fluidos en tubos capilares del viscosímetro."
-    },
-    {
-        q: "20. Cuando un líquido alcanza su punto crítico en el diagrama de fases:",
-        options: ["Solidifica instantáneamente", "Las fases líquida y gaseosa se vuelven indistinguibles", "Su presión de vapor cae a cero", "La viscosidad tiende a infinito"],
-        correct: 1,
-        exp: "Al superar la T y P críticas desaparece el menisco de separación, convirtiéndose en fluido supercrítico."
-    },
-    {
-        q: "21. ¿Qué sustancia tiene mayor presión de vapor a temperatura ambiente ($20^\\circ\\text{C}$)?",
-        options: ["Agua ($H_2O$)", "Éter dietílico (volátil)", "Glicerol (viscoso)", "Aceite mineral"],
-        correct: 1,
-        exp: "Las sustancias volátiles con débiles fuerzas intermoleculares tienen presiones de vapor elevadas."
-    },
-    {
-        q: "22. En la digestión alimentaria, las sales biliares facilitan el trabajo de la lipasa porque:",
-        options: ["Elevan la viscosidad del quimo", "Reducen la tensión interfacial lipido-agua permitiendo la emulsificación", "Aumentan la presión de vapor de los triglicéridos", "Aumentan la capilaridad del duodeno"],
-        correct: 1,
-        exp: "Las sales biliares son tensoactivos biológicos que emulsifican grasas disminuyendo la tensión interfacial."
-    },
-    {
-        q: "23. En la formulación de colirios oftálmicos, aumentar la viscosidad busca:",
-        options: ["Disminuir el ardor", "Aumentar el tiempo de retención del fármaco en la córnea", "Evitar el uso de agua", "Aumentar la volatilidad"],
-        correct: 1,
-        exp: "El incremento de la viscosidad evita que el parpadeo y drenaje lagrimal remuevan rápido el medicamento."
-    },
-    {
-        q: "24. ¿Cuál de los siguientes fluidos presenta flujo laminar con máxima velocidad en el centro del capilar?",
-        options: ["Agua fluyendo por un tubo circular a baja velocidad", "Un gas en expansión explosiva", "Vapor supercrítico turbulento", "Un sólido cristalino"],
-        correct: 0,
-        exp: "El perfil parabólico de flujo laminar alcanza su pico en el centro del tubo capilar."
-    },
-    {
-        q: "25. La constante $R$ utilizada en la ecuación de Clausius-Clapeyron en el SI es:",
-        options: ["$0.0821\\text{ L}\\cdot\\text{atm}/(\\text{mol}\\cdot\\text{K})$", "$8.314\\text{ J}/(\\text{mol}\\cdot\\text{K})$", "$62.4\\text{ mmHg}\\cdot\\text{L}/(\\text{mol}\\cdot\\text{K})$", "$1.987\\text{ cal}/(\\text{mol}\\cdot\\text{K})$"],
-        correct: 1,
-        exp: "Para la obtención de valores energéticos en Joules/kJ en Clausius-Clapeyron se usa $R = 8.314\\text{ J}/(\\text{mol}\\cdot\\text{K})$."
-    },
-    {
-        q: "26. Un líquido humecta una superficie sólida cuando:",
-        options: ["Las fuerzas de adhesión superan a las de cohesión", "Las fuerzas de cohesión superan a las de adhesión", "La viscosidad es infinita", "La temperatura es 0 Kelvin"],
-        correct: 0,
-        exp: "El mojado o humectación requiere de fuerzas adhesivas líquido-sólido preponderantes."
-    },
-    {
-        q: "27. Al aumentar la masa molar de una serie de alcanos lineales, la fuerza de London y el punto de ebullición:",
-        options: ["Disminuyen", "Aumentan", "Permanecen inalterados", "Se vuelven nulos"],
-        correct: 1,
-        exp: "A mayor tamaño y masa molecular, mayor polarizabilidad y mayores fuerzas de London, elevando el punto de ebullición."
-    },
-    {
-        q: "28. ¿Qué es el equilibrio dinámico en un líquido encerrado?",
-        options: ["Cuando ya no se evapora nada de líquido", "Cuando la velocidad de evaporación iguala a la velocidad de condensación", "Cuando el recipiente explota por presión", "Cuando la viscosidad se iguala al peso"],
-        correct: 1,
-        exp: "Es un proceso reversible donde ambas velocidades opuestas se equiparan cuantitativamente."
-    },
-    {
-        q: "29. ¿Qué relación hay entre las fuerzas intermoleculares de un líquido y su viscosidad?",
-        options: ["A mayor fuerza intermolecular, menor viscosidad", "A mayor fuerza intermolecular, mayor viscosidad", "No existe relación física", "Inversamente proporcional al cuadrado de la masa"],
-        correct: 1,
-        exp: "Fuerzas de atracción más intensas dificultan el deslizamiento entre capas moleculares, elevando la viscosidad."
-    },
-    {
-        q: "30. Si el ángulo de contacto de un líquido con el tubo capilar es $\\theta \\approx 0^\\circ$, el término $\\cos(\\theta)$ en la ecuación equivale a:",
-        options: ["0", "1", "0.5", "Infinito"],
-        correct: 1,
-        exp: "El coseno de 0 grados es 1, por lo que el término se simplifica en la expresión."
-    }
-];
-
-let currentQuizQuestions = [];
-let quizAnswersUser = [];
-
-function selectRandomQuestions() {
-    const shuffled = [...questionBank].sort(() => 0.5 - Math.random());
-    currentQuizQuestions = shuffled.slice(0, 10);
-    quizAnswersUser = new Array(10).fill(null);
-}
-
-function renderQuiz() {
-    const container = document.getElementById('quiz-container');
-    container.innerHTML = '';
-
-    currentQuizQuestions.forEach((qObj, index) => {
-        const qCard = document.createElement('div');
-        qCard.className = 'quiz-question-card';
-
-        let optionsHTML = '';
-        qObj.options.forEach((optText, optIdx) => {
-            optionsHTML += `<button class="quiz-option" id="opt-${index}-${optIdx}" onclick="selectAnswer(${index}, ${optIdx})">${optText}</button>`;
+  // ============================================================
+        //  AMPLIAR IMÁGENES AL HACER CLIC
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selecciona todas las imágenes que están dentro de contenedores .img-container
+            // y también las que tengan clase 'molecule-img' (por si están fuera)
+            const imagenes = document.querySelectorAll('.img-container img, .molecule-img');
+            imagenes.forEach(img => {
+                // Cambia el cursor para indicar que es clickeable
+                img.style.cursor = 'pointer';
+                img.addEventListener('click', function(e) {
+                    // Abre la imagen en una nueva pestaña/ventana
+                    window.open(this.src, '_blank');
+                });
+            });
         });
-
-        qCard.innerHTML = `
-            <div class="quiz-question">Pregunta ${index + 1}: ${qObj.q}</div>
-            <div class="quiz-options">${optionsHTML}</div>
-            <div class="quiz-explanation" id="exp-${index}">💡 <strong>Explicación:</strong> ${qObj.exp}</div>
-        `;
-        container.appendChild(qCard);
-    });
-
-    updateQuizProgress();
-    if (window.MathJax) {
-        MathJax.typesetPromise();
-    }
-}
-
-function selectAnswer(qIdx, optIdx) {
-    if (quizAnswersUser[qIdx] !== null) return; // evita re-seleccionar
-
-    quizAnswersUser[qIdx] = optIdx;
-    const qObj = currentQuizQuestions[qIdx];
-    const isCorrect = optIdx === qObj.correct;
-
-    const selectedBtn = document.getElementById(`opt-${qIdx}-${optIdx}`);
-    if (isCorrect) {
-        selectedBtn.classList.add('correct');
-    } else {
-        selectedBtn.classList.add('incorrect');
-        document.getElementById(`opt-${qIdx}-${qObj.correct}`).classList.add('correct');
-    }
-
-    // Deshabilitar botones de esa pregunta
-    for (let i = 0; i < qObj.options.length; i++) {
-        document.getElementById(`opt-${qIdx}-${i}`).disabled = true;
-    }
-
-    // Mostrar explicación
-    document.getElementById(`exp-${qIdx}`).style.display = 'block';
-
-    updateQuizProgress();
-}
-
-function updateQuizProgress() {
-    const answeredCount = quizAnswersUser.filter(a => a !== null).length;
-    let score = 0;
-    quizAnswersUser.forEach((ans, idx) => {
-        if (ans !== null && ans === currentQuizQuestions[idx].correct) {
-            score++;
-        }
-    });
-
-    document.getElementById('q-progress-text').textContent = `Pregunta ${answeredCount} de 10 respondidas`;
-    document.getElementById('q-score-text').textContent = `Puntaje: ${score} / 10`;
-    document.getElementById('q-bar').style.width = `${(answeredCount / 10) * 100}%`;
-
-    if (answeredCount === 10) {
-        const resDiv = document.getElementById('quiz-result');
-        const pct = (score / 10) * 100;
-        let feedback = pct >= 80 ? '🎉 ¡Felicidades! Tienes un excelente conocimiento del estado líquido.' : '📖 Te sugerimos revisar las explicaciones e intentar un nuevo ciclo.';
-        resDiv.innerHTML = `<strong>Resultado Final del Ciclo:</strong> ${score} / 10 aciertos (<strong>${pct}%</strong>).<br>${feedback}`;
-        resDiv.classList.add('show');
-    }
-}
-
-function startNewCycle() {
-    selectRandomQuestions();
-    renderQuiz();
-    const resDiv = document.getElementById('quiz-result');
-    resDiv.classList.remove('show');
-    resDiv.innerHTML = '';
-}
-
-// ================= INICIALIZACIÓN GENERAL =================
-window.addEventListener('DOMContentLoaded', () => {
-    fcRenderCard();
-    startNewCycle();
-});
 </script>
 
 </body>
